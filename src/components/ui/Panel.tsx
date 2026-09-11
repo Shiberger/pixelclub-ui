@@ -14,6 +14,7 @@ interface PanelProps {
   children: ReactNode;
   className?: string;
   width?: string;
+  height?: string;
 }
 
 /**
@@ -28,6 +29,7 @@ export function Panel({
   children,
   className,
   width = "min(1180px, 94vw)",
+  height = "min(690px, 100%)",
 }: PanelProps) {
   const t = THEME[theme];
 
@@ -69,7 +71,7 @@ export function Panel({
             borderColor: t.base,
             background: `linear-gradient(160deg, ${hexA(t.dark, 0.85)} 0%, rgba(10,10,16,.97) 28%, rgba(7,7,12,.98) 100%)`,
             boxShadow: `inset 0 0 0 1px ${hexA(t.light, 0.35)}, 0 0 32px ${hexA(t.base, 0.45)}, 0 24px 60px rgba(0,0,0,.8)`,
-            height: "min(690px, 100%)",
+            height,
           }}
         >
           <div className="flex min-h-0 flex-1 flex-col rounded-[10px] bg-black/45 bevel-inset">{children}</div>

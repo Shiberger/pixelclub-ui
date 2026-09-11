@@ -9,8 +9,8 @@ import type { BattlepassReward } from "@/data/types";
 import { THEME, hexA } from "@/lib/theme";
 
 const LEVEL_BOOSTS = [1, 10, 50] as const;
-const COL_W = 92;
-const COL_GAP = 8;
+const COL_W = 184;
+const COL_GAP = 14;
 
 export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; onPurchase: (label: string) => void }) {
   const [premium, setPremium] = useState(SEASON.premiumOwned);
@@ -69,7 +69,8 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
       title="Battlepass"
       theme="gold"
       onClose={onClose}
-      width="min(1240px, 95vw)"
+      width="min(1180px, 94vw)"
+      height="min(1040px, 94vh)"
       headerSlot={
         <div className="flex w-full items-center gap-3">
           {/* season + exp */}
@@ -110,32 +111,41 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
       <div className="flex min-h-0 flex-1 gap-3 p-3">
         {/* ---- premium pass panel ---- */}
         <aside
-          className="relative flex w-[288px] shrink-0 flex-col overflow-hidden rounded-[12px] border-2"
+          className="relative flex w-[340px] shrink-0 flex-col overflow-hidden rounded-[12px] border-2"
           style={{
             borderColor: hexA(g.base, .9),
             background: `linear-gradient(170deg, ${hexA(g.base, .28)}, rgba(10,10,16,.96) 60%)`,
             boxShadow: `inset 0 1px 0 ${hexA(g.light, .4)}, 0 0 20px ${hexA(g.base, .35)}`,
           }}
         >
-          <div className="relative z-10 px-3 pt-3 text-center">
-            <div className="font-display txt-stroke text-[26px] leading-none" style={{ color: g.light, textShadow: `0 0 16px ${hexA(g.base, .9)}` }}>
+          <div className="relative z-10 px-3 pt-4 text-center">
+            <div className="font-display txt-stroke text-[30px] leading-none" style={{ color: g.light, textShadow: `0 0 16px ${hexA(g.base, .9)}` }}>
               Premium Pass
             </div>
-            <div className="text-[12px] font-bold text-white/70">Season {SEASON.number} · {SEASON.name}</div>
+            <div className="text-[13px] font-bold text-white/70">Season {SEASON.number} · {SEASON.name}</div>
           </div>
 
-          <div className="relative min-h-0 flex-1">
-            <div className="anim-pulse-glow absolute inset-x-6 top-6 bottom-16 rounded-full blur-[46px]" style={{ background: hexA(g.light, .45) }} />
+          <div className="relative min-h-0 flex-1 overflow-hidden">
+            {/* radial stage light + slow-spinning starburst behind the hero, like the bundle showcase art */}
+            <div
+              className="anim-spin-slow absolute top-[46%] left-1/2 size-[460px] -translate-x-1/2 -translate-y-1/2 opacity-60"
+              style={{
+                background: `conic-gradient(from 0deg, ${hexA(g.light, .5)} 0deg 8deg, transparent 8deg 30deg, ${hexA(g.light, .35)} 30deg 36deg, transparent 36deg 60deg)`,
+                maskImage: "radial-gradient(circle, #000 10%, transparent 70%)",
+                WebkitMaskImage: "radial-gradient(circle, #000 10%, transparent 70%)",
+              }}
+            />
+            <div className="anim-pulse-glow absolute inset-x-2 top-2 bottom-10 rounded-full blur-[58px]" style={{ background: hexA(g.light, .55) }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={SEASON.heroSprite}
               alt={SEASON.heroName}
-              className="anim-float absolute inset-0 m-auto size-[94%] object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,.85)]"
+              className="anim-float absolute inset-0 m-auto size-[118%] object-contain drop-shadow-[0_20px_36px_rgba(0,0,0,.9)]"
             />
           </div>
 
           <div className="relative z-10 px-3 pb-3">
-            <p className="mb-2 text-center text-[11.5px] font-semibold text-white/80">
+            <p className="mb-2 text-center text-[12.5px] font-semibold text-white/80">
               {premium
                 ? "Premium unlocked — every premium tier is yours to claim!"
                 : "Purchase the Premium Pass to unlock EXCLUSIVE premium tier rewards!"}
@@ -146,10 +156,10 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
                 price={premium ? undefined : SEASON.premiumPrice}
                 disabled={premium}
                 theme={premium ? "green" : "cyan"}
-                className="h-[42px] min-w-0 flex-1 text-[15px]"
+                className="h-[46px] min-w-0 flex-1 text-[16px]"
                 onClick={() => { setPremium(true); onPurchase("Premium Pass"); }}
               />
-              <IconButton title="Gift the Premium Pass" theme="violet"><span className="text-[17px]">🎁</span></IconButton>
+              <IconButton title="Gift the Premium Pass" theme="violet" size={46}><span className="text-[18px]">🎁</span></IconButton>
             </div>
           </div>
         </aside>
@@ -158,17 +168,17 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="flex min-h-0 flex-1 gap-2">
             {/* track labels */}
-            <div className="flex w-[74px] shrink-0 flex-col gap-2 pt-[30px]">
+            <div className="flex w-[92px] shrink-0 flex-col gap-2 pt-[40px]">
               <div className="flex flex-1 flex-col items-center justify-center rounded-[9px] border-2 border-black/60 bg-[linear-gradient(180deg,#3a3a4a,#1c1c26)]">
-                <span className="text-[18px]">🎁</span>
-                <span className="font-display txt-stroke-xs text-[12px]">Free</span>
+                <span className="text-[24px]">🎁</span>
+                <span className="font-display txt-stroke-xs text-[14px]">Free</span>
               </div>
               <div
                 className="flex flex-1 flex-col items-center justify-center rounded-[9px] border-2"
                 style={{ borderColor: hexA(g.base, .9), background: `linear-gradient(180deg, ${hexA(g.base, .45)}, rgba(12,12,18,.95))`, boxShadow: `0 0 14px ${hexA(g.base, .4)}` }}
               >
-                <span className="text-[18px]">{premium ? "👑" : "🔒"}</span>
-                <span className="font-display txt-stroke-xs text-[12px]" style={{ color: g.light }}>Premium</span>
+                <span className="text-[24px]">{premium ? "👑" : "🔒"}</span>
+                <span className="font-display txt-stroke-xs text-[14px]" style={{ color: g.light }}>Premium</span>
               </div>
             </div>
 
@@ -178,9 +188,9 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
                 {byLevel.map(([level, row]) => {
                   const current = level === SEASON.level;
                   return (
-                    <div key={level} className="flex h-full w-[92px] shrink-0 flex-col gap-2">
+                    <div key={level} className="flex h-full shrink-0 flex-col gap-2" style={{ width: COL_W }}>
                       <div
-                        className="grid h-[26px] shrink-0 place-items-center rounded-[6px] border-2 text-[12px] font-black"
+                        className="grid h-[32px] shrink-0 place-items-center rounded-[6px] border-2 text-[14px] font-black"
                         style={
                           current
                             ? { borderColor: g.light, background: `linear-gradient(180deg,${g.base},${g.dark})`, color: "#fff", boxShadow: `0 0 12px ${hexA(g.base, .9)}` }

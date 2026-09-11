@@ -13,6 +13,24 @@ export const WALLET: Record<string, number> = {
   point: 4_820,
 };
 
+/** Real PixelClub SKU icons, reused below to compose illustrative bundle contents. */
+const ASSET = {
+  battlepassPremium: "https://www.pixelclub.asia/assets/uploads/images/img_69f62fe1240d2.webp",
+  starterBundle: "https://www.pixelclub.asia/assets/uploads/images/img_69e2b30d32e32.webp",
+  levelUp: "https://i.ibb.co/FL2bJQqv/Keep-level-xp-glitter-remove-202606121841-2.jpg",
+  adventureKey: "https://i.ibb.co/8Lj9fDK0/exec-ce2d8455-833e-468e-9c1f-ec7b1d9daad5.png",
+  pajamasKey: "https://i.ibb.co/4nyvfmMz/exec-d650dc4e-5e47-4f0b-84b6-fb4c8e50dc73.png",
+  commonKey: "https://www.pixelclub.asia/assets/uploads/images/img_6a07158472767.webp",
+  catchBooster: "https://www.pixelclub.asia/assets/uploads/images/img_69f5f5ade1655.webp",
+  expBooster: "https://www.pixelclub.asia/assets/uploads/images/img_69f5f5ace3d46.webp",
+};
+
+/**
+ * The live API doesn't expose a per-bundle "what's inside" breakdown, so the
+ * `contents` below are an illustrative mix built only from real PixelClub SKU
+ * icons (+ a generic Point chip) — good enough for a prototype, not a claim
+ * about the server's actual drop table.
+ */
 export const BUNDLES: Bundle[] = [
   {
     id: "bundle-20",
@@ -20,7 +38,12 @@ export const BUNDLES: Bundle[] = [
     name: "Battlepass [ Premium ]",
     tagline: "Unlock the premium Battle Pass track and claim every exclusive tier reward.",
     theme: "magenta",
-    contents: [{ id: "bundle-20-icon", name: "Battlepass [ Premium ]", qty: 1, rarity: "epic", sprite: "https://www.pixelclub.asia/assets/uploads/images/img_69f62fe1240d2.webp" }],
+    contents: [
+      { id: "bundle-20-pass", name: "Battlepass [ Premium ]", qty: 1, rarity: "mythic", sprite: ASSET.battlepassPremium },
+      { id: "bundle-20-point", name: "Point", qty: 500, rarity: "epic", emoji: "🪙" },
+      { id: "bundle-20-exp", name: "x2 Exp Booster", qty: 1, rarity: "rare", sprite: ASSET.expBooster },
+      { id: "bundle-20-key", name: "Adventure Key", qty: 2, rarity: "uncommon", sprite: ASSET.adventureKey },
+    ],
     price: { kind: "point", amount: 150 },
     showcase: { src: pkmn.home(384), kind: "pokemon" }, badge: "HOT",
   },
@@ -30,7 +53,13 @@ export const BUNDLES: Bundle[] = [
     name: "Starter Bundle #2",
     tagline: "A bigger head start for new trainers — more balls, more crates, more points.",
     theme: "green",
-    contents: [{ id: "bundle-11-icon", name: "Starter Bundle #2", qty: 1, rarity: "epic", sprite: "https://www.pixelclub.asia/assets/uploads/images/img_69e2b30d32e32.webp" }],
+    contents: [
+      { id: "bundle-11-point", name: "Point", qty: 300, rarity: "epic", emoji: "🪙" },
+      { id: "bundle-11-adv", name: "Adventure Key", qty: 3, rarity: "uncommon", sprite: ASSET.adventureKey },
+      { id: "bundle-11-paj", name: "Pajamas Key", qty: 2, rarity: "uncommon", sprite: ASSET.pajamasKey },
+      { id: "bundle-11-common", name: "Common key", qty: 1, rarity: "common", sprite: ASSET.commonKey },
+      { id: "bundle-11-catch", name: "x2 Catch Booster", qty: 1, rarity: "rare", sprite: ASSET.catchBooster },
+    ],
     price: { kind: "point", amount: 140 },
     showcase: { src: pkmn.home(6), kind: "pokemon" },
   },
@@ -40,7 +69,12 @@ export const BUNDLES: Bundle[] = [
     name: "Starter Bundle #1",
     tagline: "Everything a new trainer needs to get going on PixelClub.",
     theme: "green",
-    contents: [{ id: "bundle-10-icon", name: "Starter Bundle #1", qty: 1, rarity: "epic", sprite: "https://www.pixelclub.asia/assets/uploads/images/img_69e2b30d32e32.webp" }],
+    contents: [
+      { id: "bundle-10-point", name: "Point", qty: 150, rarity: "epic", emoji: "🪙" },
+      { id: "bundle-10-adv", name: "Adventure Key", qty: 2, rarity: "uncommon", sprite: ASSET.adventureKey },
+      { id: "bundle-10-paj", name: "Pajamas Key", qty: 1, rarity: "uncommon", sprite: ASSET.pajamasKey },
+      { id: "bundle-10-common", name: "Common key", qty: 1, rarity: "common", sprite: ASSET.commonKey },
+    ],
     price: { kind: "point", amount: 75 },
     showcase: { src: pkmn.home(25), kind: "pokemon" }, badge: "FIRST TIME ONLY",
   },
@@ -50,7 +84,10 @@ export const BUNDLES: Bundle[] = [
     name: "+1 Level Battle Pass",
     tagline: "Instantly gain +1 Battle Pass level.",
     theme: "cyan",
-    contents: [{ id: "bundle-29-icon", name: "+1 Level Battle Pass", qty: 1, rarity: "epic", sprite: "https://i.ibb.co/FL2bJQqv/Keep-level-xp-glitter-remove-202606121841-2.jpg" }],
+    contents: [
+      { id: "bundle-29-level", name: "+1 Level Battle Pass", qty: 1, rarity: "epic", sprite: ASSET.levelUp },
+      { id: "bundle-29-point", name: "Point", qty: 50, rarity: "rare", emoji: "🪙" },
+    ],
     price: { kind: "point", amount: 10 },
     showcase: { src: pkmn.home(133), kind: "pokemon" },
   },
