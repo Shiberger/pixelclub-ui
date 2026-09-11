@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   PixelClub UI — Design System
+   Extracted from ref-uxui (Roblox-style anime game HUD)
+   ============================================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display-face);
+  --font-ui: var(--font-fredoka);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: dark;
+
+  /* --- surfaces --- */
+  --surface-0: #05050a;
+  --surface-1: #0b0b12;
+  --surface-2: #13131c;
+  --surface-3: #1c1c28;
+  --surface-4: #262636;
+
+  /* --- text --- */
+  --text-hi: #ffffff;
+  --text-mid: #b9b9cc;
+  --text-lo: #7a7a90;
+
+  /* --- brand / accents --- */
+  --magenta: #c026d3;
+  --magenta-lt: #f065ff;
+  --violet: #8b2fe8;
+  --cyan: #22d3ee;
+  --cyan-lt: #7ef0ff;
+  --green: #7ed321;
+  --green-lt: #a8f03c;
+  --green-dk: #3f8f06;
+  --gold: #fbbf24;
+  --gold-lt: #fde68a;
+  --red: #ef2b45;
+  --red-lt: #ff6b7d;
+  --blue: #3b82f6;
+  --orange: #fb923c;
+
+  /* --- rarity --- */
+  --r-common: #9aa3b2;
+  --r-uncommon: #4ade80;
+  --r-rare: #38bdf8;
+  --r-epic: #c084fc;
+  --r-legend: #fbbf24;
+  --r-mythic: #fb5a7d;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+* { -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--surface-0);
+  color: var(--text-hi);
+  font-family: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* ============================================================
+   Typography — chunky stroked game text
+   ============================================================ */
+.font-display {
+  font-family: var(--font-display), var(--font-ui), sans-serif;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+
+/* Outlined text like the reference titles */
+.txt-stroke {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 3px rgba(0, 0, 0, .85);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .6);
+}
+.txt-stroke-sm { -webkit-text-stroke: 2px rgba(0, 0, 0, .8); paint-order: stroke fill; }
+.txt-stroke-xs { -webkit-text-stroke: 1.5px rgba(0, 0, 0, .75); paint-order: stroke fill; }
+
+.txt-grad {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* ============================================================
+   Bevel — the signature chunky 3D button/panel edge
+   ============================================================ */
+.bevel {
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, .28),
+    inset 0 -3px 0 rgba(0, 0, 0, .45),
+    0 3px 0 rgba(0, 0, 0, .55),
+    0 5px 14px rgba(0, 0, 0, .55);
+}
+.bevel-sm {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .25),
+    inset 0 -2px 0 rgba(0, 0, 0, .4),
+    0 2px 0 rgba(0, 0, 0, .5),
+    0 3px 8px rgba(0, 0, 0, .45);
+}
+.bevel-inset {
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, .75),
+    inset 0 -1px 0 rgba(255, 255, 255, .07);
+}
+
+/* Interactive press feel */
+.pressable { transition: transform .09s ease, filter .12s ease; will-change: transform; }
+.pressable:hover { transform: translateY(-1px); filter: brightness(1.12); }
+.pressable:active { transform: translateY(2px); filter: brightness(.94); }
+
+/* ============================================================
+   Scrollbars — thin, game-styled
+   ============================================================ */
+.scroll-y { overflow-y: auto; overflow-x: hidden; scrollbar-gutter: stable; }
+.scroll-x { overflow-x: auto; overflow-y: hidden; }
+.scroll-y::-webkit-scrollbar, .scroll-x::-webkit-scrollbar { width: 10px; height: 10px; }
+.scroll-y::-webkit-scrollbar-track, .scroll-x::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, .5); border-radius: 99px;
+}
+.scroll-y::-webkit-scrollbar-thumb, .scroll-x::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #55556b, #2e2e3e);
+  border-radius: 99px;
+  border: 2px solid rgba(0, 0, 0, .6);
+}
+.scroll-y::-webkit-scrollbar-thumb:hover, .scroll-x::-webkit-scrollbar-thumb:hover { background: #6b6b85; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes pc-pop {
+  0%   { opacity: 0; transform: scale(.88) translateY(14px); }
+  60%  { opacity: 1; transform: scale(1.015) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes pc-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes pc-shine {
+  0%   { transform: translateX(-130%) skewX(-18deg); }
+  100% { transform: translateX(330%) skewX(-18deg); }
+}
+@keyframes pc-float {
+  0%, 100% { transform: translateY(0) }
+  50%      { transform: translateY(-10px) }
+}
+@keyframes pc-glow-pulse {
+  0%, 100% { opacity: .55 }
+  50%      { opacity: 1 }
+}
+@keyframes pc-spin-slow { to { transform: rotate(360deg) } }
+@keyframes pc-rise {
+  0%   { opacity: 0; transform: translateY(16px) }
+  100% { opacity: 1; transform: translateY(0) }
+}
+
+.anim-pop   { animation: pc-pop .28s cubic-bezier(.2,.9,.3,1.2) both; }
+.anim-fade  { animation: pc-fade .2s ease both; }
+.anim-float { animation: pc-float 4.5s ease-in-out infinite; }
+.anim-pulse-glow { animation: pc-glow-pulse 2.4s ease-in-out infinite; }
+.anim-spin-slow { animation: pc-spin-slow 26s linear infinite; }
+.anim-rise  { animation: pc-rise .32s cubic-bezier(.2,.9,.3,1) both; }
+
+/* Sweeping shine used on premium buttons / cards */
+.shine { position: relative; overflow: hidden; }
+.shine::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent);
+  width: 36%;
+  animation: pc-shine 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Pixel-art rendering for sprite assets
+   ============================================================ */
+.pixelated { image-rendering: pixelated; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop, .anim-fade, .anim-float, .anim-pulse-glow, .anim-spin-slow, .anim-rise,
+  .shine::after { animation: none !important; }
 }
