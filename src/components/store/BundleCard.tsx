@@ -18,9 +18,7 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
   const t = THEME[bundle.theme];
 
   return (
-    <div className="relative mb-5 pt-8">
-      {bundle.badge && <CardBadge color={t}>{bundle.badge}</CardBadge>}
-
+    <div className="relative mb-5">
       <div className="lift relative overflow-hidden rounded-[24px] border" style={surface(t)}>
         <div
           className="pointer-events-none absolute inset-0 opacity-[.05]"
@@ -35,6 +33,7 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
               <div className="flex items-center gap-2">
                 <CaptureMark size={15} tone={t} filled strokeWidth={2.2} />
                 <span className="kicker leading-none">{bundle.group}</span>
+                {bundle.badge && <CardBadge color={t}>{bundle.badge}</CardBadge>}
               </div>
               <h3 className="font-display-bold mt-2 text-[29px] leading-tight text-white">{bundle.name}</h3>
               <p className="mt-1.5 max-w-[440px] text-[14px] leading-snug text-[var(--text-mid)]">{bundle.tagline}</p>

@@ -69,9 +69,7 @@ export function RankCard({ rank, tier, onBuy }: { rank: Rank; tier: number; onBu
   const isRank = rank.group === "Ranks";
 
   return (
-    <div className="relative flex flex-col pt-7">
-      {rank.highlight && <CardBadge color={THEME.magenta}>{rank.highlight}</CardBadge>}
-
+    <div className="relative flex flex-col">
       <div className="lift relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border" style={surfaceQuiet(t)}>
         <div
           className="pointer-events-none absolute inset-0 opacity-[.05]"
@@ -83,7 +81,10 @@ export function RankCard({ rank, tier, onBuy }: { rank: Rank; tier: number; onBu
           <RankEmblem tier={tier} tone={t} />
 
           <div className="min-w-0 flex-1">
-            <div className="kicker mb-1 leading-none">{isRank ? `Tier ${tier}` : "Membership"}</div>
+            <div className="mb-1 flex items-center gap-2">
+              <span className="kicker leading-none">{isRank ? `Tier ${tier}` : "Membership"}</span>
+              {rank.highlight && <CardBadge color={THEME.magenta}>{rank.highlight}</CardBadge>}
+            </div>
             <h3 className="font-display-bold text-[21px] leading-tight text-white">{rank.name}</h3>
             <p className="mt-1 mb-3 text-[13px] leading-snug text-[var(--text-mid)]">{rank.blurb}</p>
             <ul className="space-y-1.5">

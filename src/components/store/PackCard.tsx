@@ -3,7 +3,6 @@
 import type { Pack } from "@/data/types";
 import { THEME, type ThemeName, hexA, surfaceQuiet } from "@/lib/theme";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
-import { CardBadge } from "@/components/ui/CardBadge";
 import { Bloom } from "@/components/ui/Motif";
 import { GiftIcon } from "@/components/ui/icons";
 
@@ -19,14 +18,9 @@ const GROUP_THEME: Record<string, ThemeName> = {
 export function PackCard({ pack, onBuy }: { pack: Pack; onBuy: (p: Pack) => void }) {
   const theme = GROUP_THEME[pack.group] ?? "violet";
   const t = THEME[theme];
-  const best = pack.valueTag === "BEST Value!";
 
   return (
-    <div className="relative pt-6">
-      {pack.valueTag && (
-        <CardBadge color={best ? THEME.magenta : THEME.cyan}>{best ? "Best value" : "Higher value"}</CardBadge>
-      )}
-
+    <div className="relative">
       <div className="lift group relative overflow-hidden rounded-[22px] border" style={surfaceQuiet(t)}>
         {/* art stage */}
         <div className="relative h-[168px] overflow-hidden">
