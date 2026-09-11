@@ -89,7 +89,7 @@ export const SEASON: BattlepassSeason = {
   expPerLevel: 2_000,
   endsIn: "18d 04h",
   premiumOwned: false,
-  premiumPrice: { kind: "baht", amount: 349 },
+  premiumPrice: { kind: "point", amount: 150 },
   heroSprite: pkmn.officialArtwork(384),
   heroName: "Rayquaza",
   rewards: buildRewards(),

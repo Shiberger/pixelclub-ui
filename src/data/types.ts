@@ -5,7 +5,7 @@
 
 export type Rarity = "common" | "uncommon" | "rare" | "epic" | "legendary" | "mythic";
 
-export type CurrencyId = "pokecoin" | "gem" | "clubpoint" | "eventtoken";
+export type CurrencyId = "point";
 
 export interface Currency {
   id: CurrencyId;
@@ -30,7 +30,7 @@ export interface ItemStack {
 
 export type StoreTab = "bundles" | "ranks" | "items";
 
-export type PriceKind = "gem" | "pokecoin" | "baht" | "clubpoint";
+export type PriceKind = "point";
 
 export interface Price {
   kind: PriceKind;

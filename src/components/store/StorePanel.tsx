@@ -55,8 +55,8 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
           <>
             <SectionHeader label="Ranks" theme="gold" />
             <div className="grid grid-cols-2 items-stretch gap-3">
-              {RANKS.map((r, i) => (
-                <RankCard key={r.id} rank={r} wide={i === 2} onBuy={(x) => onPurchase(x.name)} />
+              {RANKS.map((r) => (
+                <RankCard key={r.id} rank={r} onBuy={(x) => onPurchase(x.name)} />
               ))}
             </div>
           </>

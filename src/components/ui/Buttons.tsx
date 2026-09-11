@@ -6,16 +6,11 @@ import { THEME, type ThemeName, hexA } from "@/lib/theme";
 import { cn } from "@/lib/cn";
 
 const PRICE_ICON: Record<Price["kind"], string> = {
-  baht: "฿",
-  gem: "💎",
-  pokecoin: "🪙",
-  clubpoint: "🎫",
+  point: "🪙",
 };
 
 export function formatPrice(p: Price) {
-  return p.kind === "baht"
-    ? `${p.amount.toLocaleString("en-US")}`
-    : p.amount.toLocaleString("en-US");
+  return p.amount.toLocaleString("en-US");
 }
 
 /** The green price button that closes every purchasable card. */
