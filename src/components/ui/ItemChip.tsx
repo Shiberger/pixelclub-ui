@@ -47,13 +47,13 @@ export function ItemChip({ stack, size = 60, showLabel = true, className, dimmed
       )}
 
       {/* count badge */}
-      <span className="absolute top-[3px] left-[3px] rounded-[4px] bg-black/80 px-[5px] py-[1px] text-[10px] leading-[13px] font-bold text-white tabular-nums">
+      <span className="absolute top-[4px] left-[4px] rounded-[5px] bg-black/80 px-[6px] py-[2px] text-[13px] leading-[16px] font-bold text-white tabular-nums">
         {formatQty(stack.qty)}x
       </span>
 
       {/* label */}
       {showLabel && (
-        <span className="txt-stroke-xs absolute inset-x-0 bottom-0 line-clamp-2 bg-gradient-to-t from-black/85 to-transparent px-1 pt-2 pb-[2px] text-center text-[9px] leading-[10px] font-bold text-white">
+        <span className="txt-stroke-xs absolute inset-x-0 bottom-0 line-clamp-2 bg-gradient-to-t from-black/88 to-transparent px-1.5 pt-3 pb-[3px] text-center text-[12px] leading-[14px] font-bold text-white">
           {stack.name}
         </span>
       )}

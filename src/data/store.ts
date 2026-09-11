@@ -23,6 +23,8 @@ const ASSET = {
   commonKey: "https://www.pixelclub.asia/assets/uploads/images/img_6a07158472767.webp",
   catchBooster: "https://www.pixelclub.asia/assets/uploads/images/img_69f5f5ade1655.webp",
   expBooster: "https://www.pixelclub.asia/assets/uploads/images/img_69f5f5ace3d46.webp",
+  shinyBooster: "https://www.pixelclub.asia/assets/uploads/images/img_69f5f5aadb5a1.webp",
+  eliteEnchant: "https://i.ibb.co/xK0DNpNV/Chat-GPT-Image-10-2569-21-10-47.png",
 };
 
 /**
@@ -43,6 +45,11 @@ export const BUNDLES: Bundle[] = [
       { id: "bundle-20-point", name: "Point", qty: 500, rarity: "epic", emoji: "🪙" },
       { id: "bundle-20-exp", name: "x2 Exp Booster", qty: 1, rarity: "rare", sprite: ASSET.expBooster },
       { id: "bundle-20-key", name: "Adventure Key", qty: 2, rarity: "uncommon", sprite: ASSET.adventureKey },
+      { id: "bundle-20-paj", name: "Pajamas Key", qty: 2, rarity: "uncommon", sprite: ASSET.pajamasKey },
+      { id: "bundle-20-common", name: "Common Key", qty: 3, rarity: "common", sprite: ASSET.commonKey },
+      { id: "bundle-20-catch", name: "x2 Catch Booster", qty: 1, rarity: "rare", sprite: ASSET.catchBooster },
+      { id: "bundle-20-shiny", name: "x2 Shiny Booster", qty: 1, rarity: "rare", sprite: ASSET.shinyBooster },
+      { id: "bundle-20-ench", name: "[ELITE] Custom Enchant", qty: 1, rarity: "epic", sprite: ASSET.eliteEnchant },
     ],
     price: { kind: "point", amount: 150 },
     showcase: { src: legendaryGif.giratina, kind: "pokemon" }, badge: "HOT",

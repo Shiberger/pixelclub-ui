@@ -31,7 +31,7 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-3 px-5 py-4">
           <div className="flex items-center gap-2.5">
             <h3
-              className="font-display txt-stroke-sm text-[27px] leading-tight"
+              className="font-display txt-stroke-sm text-[32px] leading-tight"
               style={{ color: t.light, textShadow: `0 0 14px ${hexA(t.base, 0.9)}` }}
             >
               {bundle.name}
