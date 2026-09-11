@@ -2,16 +2,24 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Backdrop } from "./Backdrop";
-import { TopBar } from "./TopBar";
-import { LeftRail } from "./LeftRail";
-import { RightRail } from "./RightRail";
-import { BottomHud } from "./BottomHud";
+import { PartyWidget } from "./PartyWidget";
+import { Hotbar, Crosshair } from "./Hotbar";
+import { NavButtons } from "./NavButtons";
 import { StorePanel } from "@/components/store/StorePanel";
 import { BattlepassPanel } from "@/components/battlepass/BattlepassPanel";
 import { PlaceholderPanel } from "@/components/ui/Placeholder";
 import { Toast } from "@/components/ui/Toast";
 
 export type PanelId = "store" | "battlepass" | "quests" | "pokedex" | "wiki" | null;
+
+/** Hotkeys mirroring the labels on the nav buttons. */
+const HOTKEYS: Record<string, Exclude<PanelId, null>> = {
+  s: "store",
+  b: "battlepass",
+  q: "quests",
+  p: "pokedex",
+  k: "wiki",
+};
 
 export function GameShell() {
   const [panel, setPanel] = useState<PanelId>("store");
@@ -20,12 +28,10 @@ export function GameShell() {
   const close = useCallback(() => setPanel(null), []);
   const purchase = useCallback((label: string) => setToast(label), []);
 
-  // Hotkeys mirroring the rail keybind badges
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const map: Record<string, PanelId> = { p: "pokedex", q: "quests", b: "battlepass" };
-      const next = map[e.key.toLowerCase()];
+      const next = HOTKEYS[e.key.toLowerCase()];
       if (next) setPanel((cur) => (cur === next ? null : next));
     };
     window.addEventListener("keydown", onKey);
@@ -34,15 +40,17 @@ export function GameShell() {
 
   return (
     <main className="relative h-dvh w-full overflow-hidden select-none">
+      {/* --- Minecraft game layer --- */}
       <Backdrop dimmed={panel !== null} />
+      {!panel && <Crosshair />}
 
       <div className="pointer-events-none absolute inset-0">
-        <TopBar />
-        <LeftRail open={panel} onOpen={setPanel} />
-        <RightRail open={panel} onOpen={setPanel} />
-        <BottomHud />
+        <PartyWidget />
+        <NavButtons open={panel} onOpen={setPanel} />
+        <Hotbar />
       </div>
 
+      {/* --- server UI layer --- */}
       {panel === "store" && <StorePanel onClose={close} onPurchase={purchase} />}
       {panel === "battlepass" && <BattlepassPanel onClose={close} onPurchase={purchase} />}
 

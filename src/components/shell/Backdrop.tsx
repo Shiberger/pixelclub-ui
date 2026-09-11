@@ -1,107 +1,83 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { drawScene } from "@/lib/worldgen";
+
 /**
- * Stand-in for the live game view behind the UI.
+ * Stand-in for the live Minecraft view behind the UI.
  *
- * Procedural voxel landscape drawn as SVG, then blurred — exactly how the
- * reference screenshots read once a panel is open. Drop a real capture at
- * `public/backdrop.png` and it is layered on top automatically.
+ * A perspective voxel badlands scene is rasterised into a small canvas and
+ * upscaled with `image-rendering: pixelated`, which reproduces Minecraft's
+ * chunky texels. Drop a real in-game capture at `public/backdrop.png` and it
+ * replaces this automatically — no code change needed.
  */
-export function Backdrop({ dimmed }: { dimmed: boolean }) {
+
+const CANVAS_W = 480;
+const CANVAS_H = 270;
+
+/** Minecraft breeding hearts drifting over the pasture. */
+function Hearts() {
+  const hearts = [
+    { left: "58%", top: "66%", delay: "0s", size: 26 },
+    { left: "72%", top: "76%", delay: "1.4s", size: 22 },
+    { left: "92%", top: "62%", delay: "2.6s", size: 30 },
+  ];
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      <svg
-        viewBox="0 0 1600 900"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 size-full"
-        style={{ filter: `blur(${dimmed ? 8 : 3}px) saturate(1.2) brightness(${dimmed ? 0.82 : 1})`, transform: "scale(1.06)", transition: "filter .35s ease" }}
-        aria-hidden
-      >
-        <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0d1b3e" />
-            <stop offset="38%" stopColor="#2a5a9e" />
-            <stop offset="68%" stopColor="#79b4d8" />
-            <stop offset="100%" stopColor="#f0c98a" />
-          </linearGradient>
-          <radialGradient id="sunGlow" cx="50%" cy="50%">
-            <stop offset="0%" stopColor="#fff6d5" stopOpacity=".95" />
-            <stop offset="55%" stopColor="#ffca6b" stopOpacity=".45" />
-            <stop offset="100%" stopColor="#ff9a3c" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#6d8fc0" /><stop offset="100%" stopColor="#3f5a86" />
-          </linearGradient>
-          <linearGradient id="mid" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4f8a4a" /><stop offset="100%" stopColor="#23512f" />
-          </linearGradient>
-          <linearGradient id="near" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#6fbf52" /><stop offset="55%" stopColor="#3f7d34" /><stop offset="100%" stopColor="#2b4a24" />
-          </linearGradient>
-          <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4bb6d6" stopOpacity=".92" /><stop offset="100%" stopColor="#12507a" />
-          </linearGradient>
-        </defs>
+    <>
+      {hearts.map((h) => (
+        <svg
+          key={h.left}
+          viewBox="0 0 7 6"
+          className="anim-float absolute"
+          style={{ left: h.left, top: h.top, width: h.size, animationDelay: h.delay }}
+          shapeRendering="crispEdges"
+          aria-hidden
+        >
+          <path
+            fill="#e8384f"
+            d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z"
+          />
+        </svg>
+      ))}
+    </>
+  );
+}
 
-        <rect width="1600" height="900" fill="url(#sky)" />
-        <circle cx="1180" cy="300" r="300" fill="url(#sunGlow)" />
-        <rect x="1140" y="262" width="76" height="76" fill="#fff4cf" opacity=".9" />
+export function Backdrop({ dimmed }: { dimmed: boolean }) {
+  const ref = useRef<HTMLCanvasElement>(null);
 
-        {/* blocky clouds */}
-        <g fill="#ffffff" opacity=".55">
-          {[[150, 150], [420, 110], [820, 175], [1330, 120], [640, 90]].map(([x, y], i) => (
-            <g key={i}>
-              <rect x={x} y={y} width="130" height="30" />
-              <rect x={x + 30} y={y - 26} width="80" height="28" />
-              <rect x={x + 84} y={y + 8} width="72" height="24" />
-            </g>
-          ))}
-        </g>
+  useEffect(() => {
+    const ctx = ref.current?.getContext("2d");
+    if (ctx) drawScene(ctx, { width: CANVAS_W, height: CANVAS_H });
+  }, []);
 
-        {/* far mountains */}
-        <path fill="url(#far)" d="M0 470h90v-60h70v-52h80v-46h76v46h84v58h96v-78h88v78h110v-58h92v58h120v-46h96v46h96v62h104v60H0z" />
+  const filter = `blur(${dimmed ? 5 : 0}px) brightness(${dimmed ? 0.74 : 1})`;
 
-        {/* mid hills + blocky trees */}
-        <path fill="url(#mid)" d="M0 560h120v-46h110v-38h130v38h96v-58h140v58h124v-40h132v40h150v-52h160v52h148v46H0z" />
-        <g>
-          {[[190, 512], [430, 500], [700, 486], [980, 498], [1260, 470], [1452, 486]].map(([x, y], i) => (
-            <g key={i}>
-              <rect x={x + 16} y={y + 34} width="16" height="34" fill="#5a3c1e" />
-              <rect x={x - 8} y={y} width="64" height="40" fill="#2f6b34" />
-              <rect x={x + 4} y={y - 22} width="40" height="26" fill="#3a8340" />
-            </g>
-          ))}
-        </g>
-
-        {/* near terrain */}
-        <path fill="url(#near)" d="M0 700h170v-58h150v-44h180v44h190v-70h210v70h210v-52h230v52h260v58H0z" />
-        <g opacity=".35" fill="#000">
-          {Array.from({ length: 46 }, (_, i) => (
-            <rect key={i} x={i * 36} y={704 + (i % 3) * 4} width="34" height="6" />
-          ))}
-        </g>
-
-        {/* water */}
-        <rect y="742" width="1600" height="158" fill="url(#water)" />
-        <g fill="#bff0ff" opacity=".4">
-          {Array.from({ length: 24 }, (_, i) => (
-            <rect key={i} x={(i * 71 + (i % 4) * 17) % 1600} y={764 + (i % 5) * 26} width={40 + (i % 3) * 22} height="5" rx="2" />
-          ))}
-        </g>
-      </svg>
-
-      {/* optional real screenshot override */}
+  return (
+    <div className="absolute inset-0 overflow-hidden bg-[#c89a72]">
       <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "image-set(url('/backdrop.png') 1x)",
-          filter: `blur(${dimmed ? 8 : 3}px) brightness(${dimmed ? 0.82 : 1})`,
-          transform: "scale(1.05)",
-        }}
-        aria-hidden
-      />
+        className="absolute inset-0"
+        style={{ filter, transition: "filter .3s ease" }}
+      >
+        <canvas
+          ref={ref}
+          width={CANVAS_W}
+          height={CANVAS_H}
+          className="pixelated absolute inset-0 size-full object-cover"
+          aria-hidden
+        />
+        <Hearts />
 
-      {/* vignette + tint */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_42%,rgba(2,2,10,.6)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,4,14,.4),transparent_26%,transparent_66%,rgba(4,4,14,.55))]" />
+        {/* real in-game capture, when one is supplied */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "image-set(url('/backdrop.png') 1x)" }}
+          aria-hidden
+        />
+      </div>
+
+      {/* vignette so panels stay readable on top */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(20,10,4,.5)_100%)]" />
     </div>
   );
 }

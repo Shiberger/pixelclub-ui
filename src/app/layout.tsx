@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Baloo_2, Fredoka } from "next/font/google";
+import { Baloo_2, Fredoka, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -12,6 +12,12 @@ const display = Baloo_2({
   variable: "--font-display-face",
   subsets: ["latin"],
   weight: ["600", "700", "800"],
+});
+
+const pixel = Pixelify_Sans({
+  variable: "--font-pixel-face",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +33,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fredoka.variable} ${display.variable}`}>
+    <html lang="en" className={`${fredoka.variable} ${display.variable} ${pixel.variable}`}>
       <body>{children}</body>
     </html>
   );
