@@ -23,6 +23,18 @@ export function ItemChip({ stack, size = 64, showLabel = true, className, dimmed
   const r = RARITY[stack.rarity];
   const label = showLabel && size >= 80;
 
+  /**
+   * The icon gets its own zone above the label footer, sized and centered
+   * within that zone rather than centered on the full tile and nudged with a
+   * guessed margin — that previous approach left sprite icons crowding the
+   * top edge and, since an emoji glyph's own box isn't visually centered on
+   * its baseline the way a sprite's bounding box is, the emoji sinking toward
+   * the bottom. Reserving real space for the label keeps both paths centered
+   * on the same math.
+   */
+  const pad = Math.round(size * 0.14);
+  const labelH = label ? Math.round(size * 0.4) : 0;
+
   return (
     <div
       className={cn("group relative shrink-0 overflow-hidden rounded-[16px] border", className)}
@@ -39,23 +51,27 @@ export function ItemChip({ stack, size = 64, showLabel = true, className, dimmed
       }}
       title={`${formatQty(stack.qty)}× ${stack.name}`}
     >
-      {stack.sprite ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={stack.sprite}
-          alt={stack.name}
-          className="absolute inset-0 m-auto object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,.6)] transition-transform duration-300 group-hover:scale-[1.09]"
-          style={{ width: label ? "52%" : "68%", height: label ? "52%" : "68%", marginTop: label ? "-6%" : undefined }}
-          loading="lazy"
-        />
-      ) : (
-        <span
-          className="absolute inset-0 grid place-items-center transition-transform duration-300 group-hover:scale-[1.09]"
-          style={{ fontSize: size * 0.4, marginTop: label ? -size * 0.07 : 0 }}
-        >
-          {stack.emoji}
-        </span>
-      )}
+      <div
+        className="absolute flex items-center justify-center"
+        style={{ top: pad, left: pad, right: pad, bottom: label ? labelH : pad }}
+      >
+        {stack.sprite ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={stack.sprite}
+            alt={stack.name}
+            className="max-h-full max-w-full object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,.6)] transition-transform duration-300 group-hover:scale-[1.09]"
+            loading="lazy"
+          />
+        ) : (
+          <span
+            className="leading-none transition-transform duration-300 group-hover:scale-[1.09]"
+            style={{ fontSize: size * 0.4 }}
+          >
+            {stack.emoji}
+          </span>
+        )}
+      </div>
 
       <span
         className="num absolute top-1.5 left-1.5 rounded-full px-1.5 py-[1px] text-[11px] leading-[15px] font-bold text-white"
@@ -71,12 +87,18 @@ export function ItemChip({ stack, size = 64, showLabel = true, className, dimmed
       />
 
       {label && (
+        // -webkit-box (not flex) so -webkit-line-clamp can cap it at 2 lines;
+        // -webkit-box-pack is that layout's own vertical-centering knob, so a
+        // shorter one-line name still sits centered in the reserved footer
+        // instead of pinned to its bottom edge.
         <span
-          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(6,4,14,.94)] via-[rgba(6,4,14,.78)] to-transparent px-1.5 pt-6 pb-1.5 text-center text-[11px] leading-[1.25] font-semibold text-white/90"
+          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(6,4,14,.94)] via-[rgba(6,4,14,.8)] to-transparent px-1.5 pb-1.5 text-center text-[11px] leading-[1.2] font-semibold text-white/90"
           style={{
+            height: labelH,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
+            WebkitBoxPack: "center",
             overflow: "hidden",
           }}
         >
