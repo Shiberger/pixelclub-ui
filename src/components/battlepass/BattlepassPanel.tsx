@@ -137,7 +137,7 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
             />
             <div className="anim-pulse-glow absolute inset-x-2 top-2 bottom-10 rounded-full blur-[58px]" style={{ background: hexA(g.light, .55) }} />
             <div className="absolute inset-3 flex items-center justify-center">
-              <div className="h-[82%] translate-x-[20%]">
+              <div className="h-[82%]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={SEASON.heroSprite}
@@ -160,11 +160,12 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
                 price={premium ? undefined : SEASON.premiumPrice}
                 disabled={premium}
                 theme={premium ? "green" : "cyan"}
-                height={46}
+                height={54}
+                fontSize={18}
                 className="min-w-0 flex-1"
                 onClick={() => { setPremium(true); onPurchase("Premium Pass"); }}
               />
-              <IconButton title="Gift the Premium Pass" theme="violet" size={46}><span className="text-[18px]">🎁</span></IconButton>
+              <IconButton title="Gift the Premium Pass" theme="violet" size={54}><span className="text-[20px]">🎁</span></IconButton>
             </div>
           </div>
         </aside>
