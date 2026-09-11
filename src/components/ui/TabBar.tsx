@@ -44,7 +44,11 @@ export function TabBar<T extends string>({
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className="ring-focus font-display relative z-10 flex h-full flex-1 items-center justify-center rounded-full px-5 text-[14px] whitespace-nowrap transition-colors"
+            /* min-w-0 overrides the flex item's default min-content width —
+               without it, the longest label (e.g. "Bundles") forces its own
+               button wider than an equal third, which throws every button
+               out of sync with the indicator's fixed exact-thirds math. */
+            className="ring-focus font-display relative z-10 flex h-full min-w-0 flex-1 items-center justify-center rounded-full px-5 text-[14px] whitespace-nowrap transition-colors"
             style={{ color: active ? "#fff" : "var(--text-lo)" }}
           >
             {tab.label}
