@@ -39,7 +39,7 @@ export const BUNDLES: Bundle[] = [
     group: "Bundle",
     name: "Battlepass [ Premium ]",
     tagline: "Unlock the premium Battle Pass track and claim every exclusive tier reward.",
-    theme: "magenta",
+    theme: "gold",
     contents: [
       { id: "bundle-20-pass", name: "Battlepass [ Premium ]", qty: 1, rarity: "mythic", sprite: ASSET.battlepassPremium },
       { id: "bundle-20-point", name: "Point", qty: 500, rarity: "epic", emoji: "🪙" },
@@ -59,7 +59,7 @@ export const BUNDLES: Bundle[] = [
     group: "Bundle",
     name: "Starter Bundle #2",
     tagline: "A bigger head start for new trainers — more balls, more crates, more points.",
-    theme: "green",
+    theme: "red",
     contents: [
       { id: "bundle-11-point", name: "Point", qty: 300, rarity: "epic", emoji: "🪙" },
       { id: "bundle-11-adv", name: "Adventure Key", qty: 3, rarity: "uncommon", sprite: ASSET.adventureKey },
@@ -75,7 +75,7 @@ export const BUNDLES: Bundle[] = [
     group: "Bundle",
     name: "Starter Bundle #1",
     tagline: "Everything a new trainer needs to get going on PixelClub.",
-    theme: "green",
+    theme: "gold",
     contents: [
       { id: "bundle-10-point", name: "Point", qty: 150, rarity: "epic", emoji: "🪙" },
       { id: "bundle-10-adv", name: "Adventure Key", qty: 2, rarity: "uncommon", sprite: ASSET.adventureKey },
@@ -90,7 +90,7 @@ export const BUNDLES: Bundle[] = [
     group: "Bundle",
     name: "+1 Level Battle Pass",
     tagline: "Instantly gain +1 Battle Pass level.",
-    theme: "cyan",
+    theme: "blue",
     contents: [
       { id: "bundle-29-level", name: "+1 Level Battle Pass", qty: 1, rarity: "epic", sprite: ASSET.levelUp },
       { id: "bundle-29-point", name: "Point", qty: 50, rarity: "rare", emoji: "🪙" },

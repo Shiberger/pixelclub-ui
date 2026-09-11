@@ -45,7 +45,7 @@ export interface Bundle {
   name: string;
   tagline: string;
   /** drives the card gradient + border color */
-  theme: "green" | "magenta" | "orange" | "cyan" | "gold" | "red";
+  theme: "green" | "magenta" | "orange" | "cyan" | "gold" | "red" | "blue";
   contents: ItemStack[];
   price: Price;
   purchasesLeft?: number;

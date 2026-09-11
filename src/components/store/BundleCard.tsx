@@ -4,6 +4,7 @@ import type { Bundle } from "@/data/types";
 import { THEME, cardSkin, hexA, itemPattern } from "@/lib/theme";
 import { ItemChip } from "@/components/ui/ItemChip";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
+import { GiftIcon } from "@/components/ui/icons";
 
 export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundle) => void }) {
   const t = THEME[bundle.theme];
@@ -14,6 +15,16 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
       <div
         className="pointer-events-none absolute inset-0 opacity-[.14]"
         style={{ backgroundImage: itemPattern(t.light), backgroundSize: "64px 64px" }}
+      />
+
+      {/* fast glass-reflection sweep, tinted to the bundle's own theme color */}
+      <div
+        className="shine-sweep pointer-events-none absolute inset-0 z-20 mix-blend-screen"
+        style={{
+          width: "38%",
+          background: `linear-gradient(100deg, transparent 35%, ${hexA(t.light, 0.65)} 50%, transparent 65%)`,
+          animation: "pc-shine-sweep 3.2s ease-in-out infinite",
+        }}
       />
 
       {/*
@@ -82,7 +93,7 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
 
       {/* footer action bar — sized to match the bigger card */}
       <div className="relative z-10 flex items-center gap-3 border-t-2 border-black/50 bg-black/55 px-4 py-3">
-        <IconButton title="Preview contents" theme="cyan" size={54} onClick={() => onBuy(bundle)}>
+        <IconButton title="Preview contents" theme="gray" size={54} onClick={() => onBuy(bundle)}>
           <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2.2">
             <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" />
           </svg>
@@ -96,7 +107,7 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
           </span>
         )}
         <IconButton title="Gift to a friend" theme="violet" size={54}>
-          <span className="text-[21px]">🎁</span>
+          <GiftIcon />
         </IconButton>
         <BuyButton price={bundle.price} onClick={() => onBuy(bundle)} height={54} fontSize={20} className="min-w-[180px]" />
       </div>

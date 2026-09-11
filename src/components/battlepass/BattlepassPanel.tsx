@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Panel } from "@/components/ui/Panel";
 import { BuyButton, GhostButton, IconButton } from "@/components/ui/Buttons";
+import { GiftIcon } from "@/components/ui/icons";
 import { RewardCell } from "./RewardCell";
 import { SEASON } from "@/data/battlepass";
 import type { BattlepassReward } from "@/data/types";
@@ -165,7 +166,7 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
                 className="min-w-0 flex-1"
                 onClick={() => { setPremium(true); onPurchase("Premium Pass"); }}
               />
-              <IconButton title="Gift the Premium Pass" theme="violet" size={54}><span className="text-[20px]">🎁</span></IconButton>
+              <IconButton title="Gift the Premium Pass" theme="violet" size={54}><GiftIcon /></IconButton>
             </div>
           </div>
         </aside>
@@ -176,7 +177,7 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
             {/* track labels */}
             <div className="flex w-[92px] shrink-0 flex-col gap-2 pt-[40px]">
               <div className="flex flex-1 flex-col items-center justify-center rounded-[9px] border-2 border-black/60 bg-[linear-gradient(180deg,#3a3a4a,#1c1c26)]">
-                <span className="text-[24px]">🎁</span>
+                <GiftIcon className="size-6" />
                 <span className="font-display txt-stroke-xs text-[14px]">Free</span>
               </div>
               <div

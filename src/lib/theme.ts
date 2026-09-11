@@ -1,7 +1,7 @@
 import type { Rarity } from "@/data/types";
 
 /** Accent ramps used by cards, borders and glows. */
-export type ThemeName = "green" | "magenta" | "orange" | "cyan" | "gold" | "red" | "violet";
+export type ThemeName = "green" | "magenta" | "orange" | "cyan" | "gold" | "red" | "violet" | "gray" | "blue";
 
 export const THEME: Record<ThemeName, { base: string; light: string; dark: string; glow: string }> = {
   green:   { base: "#7ed321", light: "#b6f552", dark: "#2f6b00", glow: "126,211,33" },
@@ -11,6 +11,8 @@ export const THEME: Record<ThemeName, { base: string; light: string; dark: strin
   gold:    { base: "#fbbf24", light: "#fde68a", dark: "#78500a", glow: "251,191,36" },
   red:     { base: "#ef2b45", light: "#ff7d8d", dark: "#7a0d1c", glow: "239,43,69" },
   violet:  { base: "#8b5cf6", light: "#c4b5fd", dark: "#3b1b78", glow: "139,92,246" },
+  gray:    { base: "#8a8f98", light: "#c3c8d1", dark: "#33363c", glow: "138,143,152" },
+  blue:    { base: "#3b82f6", light: "#93c5fd", dark: "#1e3a8a", glow: "59,130,246" },
 };
 
 export const RARITY: Record<Rarity, { base: string; light: string; dark: string; glow: string; label: string }> = {

@@ -4,6 +4,7 @@ import type { Rank } from "@/data/types";
 import { THEME, type ThemeName, cardSkinFlat, hexA, itemPattern } from "@/lib/theme";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
 import { CardBadge } from "@/components/ui/CardBadge";
+import { GiftIcon } from "@/components/ui/icons";
 
 /**
  * One accent per section instead of per rank — a shelf of individually
@@ -57,7 +58,7 @@ export function RankCard({ rank, onBuy }: { rank: Rank; onBuy: (r: Rank) => void
         </div>
         <div className="relative z-10 flex items-center gap-2.5 border-t-2 border-black/50 bg-black/55 px-4 py-3">
           <div className="flex-1" />
-          <IconButton title="Gift to a friend" theme="violet" size={46}><span className="text-[18px]">🎁</span></IconButton>
+          <IconButton title="Gift to a friend" theme="violet" size={46}><GiftIcon className="size-5" /></IconButton>
           <BuyButton price={rank.price} onClick={() => onBuy(rank)} height={46} fontSize={17} className="min-w-[170px]" />
         </div>
       </div>

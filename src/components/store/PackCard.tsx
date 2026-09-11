@@ -4,6 +4,7 @@ import type { Pack } from "@/data/types";
 import { THEME, type ThemeName, cardSkinFlat, hexA, itemPattern } from "@/lib/theme";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
 import { CardBadge } from "@/components/ui/CardBadge";
+import { GiftIcon } from "@/components/ui/icons";
 
 /**
  * One accent per product group instead of per pack — a shelf of "Keys" (say)
@@ -50,7 +51,7 @@ export function PackCard({ pack, onBuy }: { pack: Pack; onBuy: (p: Pack) => void
         </div>
 
         <div className="relative z-10 flex items-center gap-2.5 border-t-2 border-black/50 bg-black/55 px-3 py-3.5">
-          <IconButton title="Gift to a friend" theme="violet" size={50}><span className="text-[19px]">🎁</span></IconButton>
+          <IconButton title="Gift to a friend" theme="violet" size={50}><GiftIcon className="size-5" /></IconButton>
           <BuyButton price={pack.price} onClick={() => onBuy(pack)} height={50} fontSize={18} className="min-w-0 flex-1" />
         </div>
       </div>
