@@ -44,7 +44,7 @@ export function TabBar<T extends string>({
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className="ring-focus font-display relative z-10 h-full flex-1 rounded-full px-5 text-[14px] whitespace-nowrap transition-colors"
+            className="ring-focus font-display relative z-10 flex h-full flex-1 items-center justify-center rounded-full px-5 text-[14px] whitespace-nowrap transition-colors"
             style={{ color: active ? "#fff" : "var(--text-lo)" }}
           >
             {tab.label}

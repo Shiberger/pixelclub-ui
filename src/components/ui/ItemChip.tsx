@@ -45,7 +45,7 @@ export function ItemChip({ stack, size = 64, showLabel = true, className, dimmed
           src={stack.sprite}
           alt={stack.name}
           className="absolute inset-0 m-auto object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,.6)] transition-transform duration-300 group-hover:scale-[1.09]"
-          style={{ width: label ? "58%" : "68%", height: label ? "58%" : "68%", marginTop: label ? "-14%" : undefined }}
+          style={{ width: label ? "52%" : "68%", height: label ? "52%" : "68%", marginTop: label ? "-6%" : undefined }}
           loading="lazy"
         />
       ) : (
@@ -72,7 +72,7 @@ export function ItemChip({ stack, size = 64, showLabel = true, className, dimmed
 
       {label && (
         <span
-          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(6,4,14,.92)] via-[rgba(6,4,14,.72)] to-transparent px-1.5 pt-4 pb-1 text-center text-[10.5px] leading-[1.2] font-semibold text-white/90"
+          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(6,4,14,.94)] via-[rgba(6,4,14,.78)] to-transparent px-1.5 pt-6 pb-1.5 text-center text-[11px] leading-[1.25] font-semibold text-white/90"
           style={{
             display: "-webkit-box",
             WebkitLineClamp: 2,

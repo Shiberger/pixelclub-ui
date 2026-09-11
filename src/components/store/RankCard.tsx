@@ -69,7 +69,7 @@ export function RankCard({ rank, tier, onBuy }: { rank: Rank; tier: number; onBu
   const isRank = rank.group === "Ranks";
 
   return (
-    <div className="relative flex flex-col pt-4">
+    <div className="relative flex flex-col pt-7">
       {rank.highlight && <CardBadge color={THEME.magenta}>{rank.highlight}</CardBadge>}
 
       <div className="lift relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border" style={surfaceQuiet(t)}>

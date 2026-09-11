@@ -5,9 +5,11 @@ import { hexA } from "@/lib/theme";
 import { cn } from "@/lib/cn";
 
 /**
- * Overlapping label ("Recommended", "Best value") — a soft tinted pill riding
- * the card's top edge. Rendered as a sibling of the card inside a `relative`
- * wrapper that reserves `pt-4`, so its presence never changes card height.
+ * Overlapping label ("Recommended", "Best value") — a soft tinted pill sitting
+ * above the card's top edge, clear of whatever heading sits just inside it.
+ * Rendered as a sibling of the card inside a `relative` wrapper that reserves
+ * top padding (`pt-6` or more) taller than this badge, so its presence never
+ * changes card height and never crowds the card's own first line of text.
  */
 export function CardBadge({
   children,
@@ -21,7 +23,7 @@ export function CardBadge({
   return (
     <div
       className={cn(
-        "absolute top-0 left-5 z-30 rounded-full border px-3 py-[5px] backdrop-blur-md",
+        "absolute top-0 left-5 z-30 rounded-full border px-3 py-1 backdrop-blur-md",
         className,
       )}
       style={{

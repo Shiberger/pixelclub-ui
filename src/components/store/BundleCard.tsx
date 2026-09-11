@@ -18,7 +18,7 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
   const t = THEME[bundle.theme];
 
   return (
-    <div className="relative mb-5 pt-4">
+    <div className="relative mb-5 pt-8">
       {bundle.badge && <CardBadge color={t}>{bundle.badge}</CardBadge>}
 
       <div className="lift relative overflow-hidden rounded-[24px] border" style={surface(t)}>
@@ -44,7 +44,7 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
               <div className="kicker mb-2 leading-none">Inside</div>
               <div className="flex flex-wrap gap-2">
                 {bundle.contents.map((c, i) => (
-                  <ItemChip key={`${c.id}-${i}`} stack={c} size={86} />
+                  <ItemChip key={`${c.id}-${i}`} stack={c} size={96} />
                 ))}
               </div>
             </div>

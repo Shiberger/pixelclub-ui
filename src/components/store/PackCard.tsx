@@ -22,7 +22,7 @@ export function PackCard({ pack, onBuy }: { pack: Pack; onBuy: (p: Pack) => void
   const best = pack.valueTag === "BEST Value!";
 
   return (
-    <div className="relative pt-4">
+    <div className="relative pt-6">
       {pack.valueTag && (
         <CardBadge color={best ? THEME.magenta : THEME.cyan}>{best ? "Best value" : "Higher value"}</CardBadge>
       )}
