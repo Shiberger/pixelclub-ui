@@ -4,15 +4,16 @@ import { useCallback, useEffect, useState } from "react";
 import { Backdrop } from "./Backdrop";
 import { PartyWidget } from "./PartyWidget";
 import { Hotbar, Crosshair } from "./Hotbar";
-import { NavButtons } from "./NavButtons";
+import { MenuDock } from "./MenuDock";
 import { StorePanel } from "@/components/store/StorePanel";
 import { BattlepassPanel } from "@/components/battlepass/BattlepassPanel";
 import { PlaceholderPanel } from "@/components/ui/Placeholder";
 import { Toast } from "@/components/ui/Toast";
+import { legendaryGif, pkmn } from "@/lib/assets";
 
 export type PanelId = "store" | "battlepass" | "quests" | "pokedex" | "wiki" | null;
 
-/** Hotkeys mirroring the labels on the nav buttons. */
+/** Hotkeys mirroring the chips on the menu cards. */
 const HOTKEYS: Record<string, Exclude<PanelId, null>> = {
   s: "store",
   b: "battlepass",
@@ -27,6 +28,7 @@ export function GameShell() {
 
   const close = useCallback(() => setPanel(null), []);
   const purchase = useCallback((label: string) => setToast(label), []);
+  const open = panel !== null;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -41,13 +43,20 @@ export function GameShell() {
   return (
     <main className="relative h-dvh w-full overflow-hidden select-none">
       {/* --- Minecraft game layer --- */}
-      <Backdrop dimmed={panel !== null} />
-      {!panel && <Crosshair />}
+      <Backdrop dimmed={open} />
+      {!open && <Crosshair />}
 
+      {/* --- server HUD --- */}
       <div className="pointer-events-none absolute inset-0">
-        <PartyWidget />
-        <NavButtons open={panel} onOpen={setPanel} />
-        <Hotbar />
+        <PartyWidget collapsed={open} />
+        <MenuDock open={panel} onOpen={setPanel} />
+        <Hotbar faded={open} />
+
+        <div className="glass absolute bottom-5 left-5 flex items-center gap-2.5 rounded-full px-3.5 py-2">
+          <span className="size-2 rounded-full bg-[var(--mint-500)] shadow-[0_0_8px_var(--mint-500)]" />
+          <span className="text-[12px] leading-none font-bold text-white">pixelclub.asia</span>
+          <span className="num text-[11px] leading-none text-[var(--text-lo)]">842 online</span>
+        </div>
       </div>
 
       {/* --- server UI layer --- */}
@@ -56,12 +65,14 @@ export function GameShell() {
 
       {panel === "quests" && (
         <PlaceholderPanel
-          title="Pokédex Rewards"
-          theme="cyan"
+          title="Rewards"
+          theme="green"
           phase="Phase 2"
+          art={pkmn.home(133)}
+          blurb="Daily, weekly and Pokédex milestones in one place — every claim routed through the same reward cell you already know from the Battlepass."
           onClose={close}
           bullets={[
-            "Quest list with Daily / Weekly / Region filters and live progress bars",
+            "Quest list with Daily / Weekly / Region filters and live progress rings",
             "Detail pane showing objectives, timers and the reward stack",
             "Pokédex completion milestones (Kanto 50% → Master Ball, etc.)",
             "Claim + Claim All flow reusing the Battlepass reward cells",
@@ -71,25 +82,29 @@ export function GameShell() {
       {panel === "pokedex" && (
         <PlaceholderPanel
           title="Pokédex"
-          theme="red"
+          theme="cyan"
           phase="Phase 2"
+          art={pkmn.home(151)}
+          blurb="The collection screen: a caught/seen grid that doubles as the entry point into every Pokémon's detail card."
           onClose={close}
           bullets={[
             "Region tabs with a caught / seen / missing grid of 1,000+ entries",
             "Detail view with the 3D render, typing, stats and catch locations",
             "Search + filters by type, rarity, generation and shiny status",
-            "Completion ring feeding the Pokédex Rewards screen",
+            "Completion ring feeding the Rewards screen",
           ]}
         />
       )}
       {panel === "wiki" && (
         <PlaceholderPanel
-          title="PixelClub Wiki"
+          title="Wiki"
           theme="violet"
           phase="Phase 3"
+          art={legendaryGif.latios}
+          blurb="In-game knowledge base, so players stop alt-tabbing to Discord for spawn rates and rank perks."
           onClose={close}
           bullets={[
-            "Searchable in-game knowledge base with a left-hand category tree",
+            "Searchable knowledge base with a left-hand category tree",
             "Article pages for mechanics, ranks, events and server rules",
             "Type-effectiveness chart and spawn-rate tables",
             "Deep links from the catch alert and Pokédex entries",

@@ -2,46 +2,21 @@
 
 import { useEffect, useRef } from "react";
 import { drawScene } from "@/lib/worldgen";
+import { Beams, Motes } from "@/components/ui/Motif";
+import { THEME } from "@/lib/theme";
 
 /**
  * Stand-in for the live Minecraft view behind the UI.
  *
- * A perspective voxel badlands scene is rasterised into a small canvas and
- * upscaled with `image-rendering: pixelated`, which reproduces Minecraft's
- * chunky texels. Drop a real in-game capture at `public/backdrop.png` and it
- * replaces this automatically — no code change needed.
+ * The voxel scene itself is unchanged — Design 2.0 sits on top of it as a
+ * lighting rig: a violet grade, volumetric shafts raking across the world and
+ * slow motes in the air, so the UI's palette reads as the same place rather
+ * than chrome pasted over a screenshot. Drop a real capture at
+ * `public/backdrop.png` and it replaces the canvas automatically.
  */
 
 const CANVAS_W = 480;
 const CANVAS_H = 270;
-
-/** Minecraft breeding hearts drifting over the pasture. */
-function Hearts() {
-  const hearts = [
-    { left: "58%", top: "66%", delay: "0s", size: 26 },
-    { left: "72%", top: "76%", delay: "1.4s", size: 22 },
-    { left: "92%", top: "62%", delay: "2.6s", size: 30 },
-  ];
-  return (
-    <>
-      {hearts.map((h) => (
-        <svg
-          key={h.left}
-          viewBox="0 0 7 6"
-          className="anim-float absolute"
-          style={{ left: h.left, top: h.top, width: h.size, animationDelay: h.delay }}
-          shapeRendering="crispEdges"
-          aria-hidden
-        >
-          <path
-            fill="#e8384f"
-            d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z"
-          />
-        </svg>
-      ))}
-    </>
-  );
-}
 
 export function Backdrop({ dimmed }: { dimmed: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -51,13 +26,17 @@ export function Backdrop({ dimmed }: { dimmed: boolean }) {
     if (ctx) drawScene(ctx, { width: CANVAS_W, height: CANVAS_H });
   }, []);
 
-  const filter = `blur(${dimmed ? 5 : 0}px) brightness(${dimmed ? 0.74 : 1})`;
-
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[#c89a72]">
+    <div className="absolute inset-0 overflow-hidden bg-[var(--ink-0)]">
       <div
         className="absolute inset-0"
-        style={{ filter, transition: "filter .3s ease" }}
+        style={{
+          filter: dimmed
+            ? "blur(9px) brightness(.72) saturate(1.05)"
+            : "blur(0) brightness(1.04) saturate(1.15) contrast(1.06)",
+          transform: dimmed ? "scale(1.03)" : "none",
+          transition: "filter .45s ease, transform .45s ease",
+        }}
       >
         <canvas
           ref={ref}
@@ -66,7 +45,6 @@ export function Backdrop({ dimmed }: { dimmed: boolean }) {
           className="pixelated absolute inset-0 size-full object-cover"
           aria-hidden
         />
-        <Hearts />
 
         {/* real in-game capture, when one is supplied */}
         <div
@@ -74,10 +52,33 @@ export function Backdrop({ dimmed }: { dimmed: boolean }) {
           style={{ backgroundImage: "image-set(url('/backdrop.png') 1x)" }}
           aria-hidden
         />
+
+        {/* violet grade — pulls the world into the UI's palette */}
+        <div
+          className="absolute inset-0 mix-blend-color"
+          style={{ background: "linear-gradient(170deg, #8b5cf6 0%, #4d18ad 55%, #240a52 100%)", opacity: dimmed ? 0.5 : 0.26 }}
+          aria-hidden
+        />
+        <div
+          className="absolute inset-0 mix-blend-screen"
+          style={{ background: "radial-gradient(80% 60% at 62% 8%, rgba(203,182,255,.34), transparent 70%)" }}
+          aria-hidden
+        />
       </div>
 
-      {/* vignette so panels stay readable on top */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(20,10,4,.5)_100%)]" />
+      {/* cinematic light, above the blur so shafts stay crisp while the world softens */}
+      <Beams tone={THEME.violet} intensity={dimmed ? 1.15 : 0.8} />
+      <Motes count={16} />
+
+      {/* vignette + HUD legibility gradients */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 42%, transparent 38%, rgba(6,3,16,.66) 100%), linear-gradient(180deg, rgba(6,3,16,.5) 0%, transparent 22%, transparent 74%, rgba(6,3,16,.6) 100%)",
+        }}
+        aria-hidden
+      />
     </div>
   );
 }

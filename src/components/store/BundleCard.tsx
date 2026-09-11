@@ -1,115 +1,110 @@
 "use client";
 
 import type { Bundle } from "@/data/types";
-import { THEME, cardSkin, hexA, itemPattern } from "@/lib/theme";
+import { THEME, hexA, prismField, surface } from "@/lib/theme";
 import { ItemChip } from "@/components/ui/ItemChip";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
-import { GiftIcon } from "@/components/ui/icons";
+import { Beams, Bloom, CaptureMark } from "@/components/ui/Motif";
+import { CardBadge } from "@/components/ui/CardBadge";
+import { EyeIcon, GiftIcon } from "@/components/ui/icons";
 
+/**
+ * The hero product card: an illustrated stage on the right where the showcase
+ * art stands in its own light, the offer written plainly on the left, and one
+ * action bar underneath. The card is a place, not a list row — that is what
+ * makes a bundle feel worth opening.
+ */
 export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundle) => void }) {
   const t = THEME[bundle.theme];
 
   return (
-    <div className="card-hover relative mb-4 overflow-hidden rounded-[12px] border-2" style={cardSkin(t)}>
-      {/* tiled item-motif backdrop, tinted to the bundle theme */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[.14]"
-        style={{ backgroundImage: itemPattern(t.light), backgroundSize: "64px 64px" }}
-      />
+    <div className="relative mb-5 pt-4">
+      {bundle.badge && <CardBadge color={t}>{bundle.badge}</CardBadge>}
 
-      {/* fast glass-reflection sweep, tinted to the bundle's own theme color */}
-      <div
-        className="shine-sweep pointer-events-none absolute inset-0 z-20 mix-blend-screen"
-        style={{
-          width: "38%",
-          background: `linear-gradient(100deg, transparent 35%, ${hexA(t.light, 0.65)} 50%, transparent 65%)`,
-          animation: "pc-shine-sweep 3.2s ease-in-out infinite",
-        }}
-      />
+      <div className="lift relative overflow-hidden rounded-[24px] border" style={surface(t)}>
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[.05]"
+          style={{ backgroundImage: prismField(t.light), backgroundSize: "72px 84px" }}
+          aria-hidden
+        />
 
-      {/*
-        A tall row: the showcase column sets a tall min-height so the 3D art
-        gets real room, while the info column just centers its (short)
-        content inside that same height — compact text, big model.
-      */}
-      <div className="relative z-10 flex items-stretch">
-        <div className="flex min-w-0 flex-1 flex-col justify-center gap-3 px-5 py-4">
-          <div className="flex items-center gap-2.5">
-            <h3
-              className="font-display txt-stroke-sm text-[32px] leading-tight"
-              style={{ color: t.light, textShadow: `0 0 14px ${hexA(t.base, 0.9)}` }}
-            >
-              {bundle.name}
-            </h3>
-            {bundle.badge && (
-              <span className="txt-stroke-xs rounded-[6px] border border-black/60 px-2 py-[3px] text-[12px] font-black"
-                style={{ background: `linear-gradient(180deg,${THEME.red.base},${THEME.red.dark})` }}>
-                {bundle.badge}
-              </span>
-            )}
-          </div>
-          <p className="text-[15px] font-semibold text-white/75">{bundle.tagline}</p>
+        <div className="relative flex items-stretch">
+          {/* offer */}
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-3.5 px-6 py-6">
+            <div>
+              <div className="flex items-center gap-2">
+                <CaptureMark size={15} tone={t} filled strokeWidth={2.2} />
+                <span className="kicker leading-none">{bundle.group}</span>
+              </div>
+              <h3 className="font-display-bold mt-2 text-[29px] leading-tight text-white">{bundle.name}</h3>
+              <p className="mt-1.5 max-w-[440px] text-[14px] leading-snug text-[var(--text-mid)]">{bundle.tagline}</p>
+            </div>
 
-          {/* what you get — big enough to match the showcase art */}
-          <div className="relative w-fit max-w-full rounded-[10px] border border-white/10 bg-black/50 p-2.5 backdrop-blur-[1px]">
-            <div className="flex flex-wrap gap-2.5">
-              {bundle.contents.map((c, i) => (
-                <ItemChip key={`${c.id}-${i}`} stack={c} size={92} />
-              ))}
+            <div>
+              <div className="kicker mb-2 leading-none">Inside</div>
+              <div className="flex flex-wrap gap-2">
+                {bundle.contents.map((c, i) => (
+                  <ItemChip key={`${c.id}-${i}`} stack={c} size={86} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* showcase column — as tall/wide as the card can give it, so the character renders as big as possible */}
-        {bundle.showcase && (
-          <div className="relative w-[44%] min-h-[380px] shrink-0 overflow-hidden rounded-r-[10px]">
-            {/* the glow and the character share one anchor, shifted together, so they never drift apart */}
-            <div className="pointer-events-none absolute inset-1.5 translate-x-[70px]">
-              <div
-                className="anim-spin-slow absolute top-1/2 left-1/2 size-[480px] -translate-x-1/2 -translate-y-1/2 opacity-55"
-                style={{
-                  background: `conic-gradient(from 0deg, ${hexA(t.light, .5)} 0deg 8deg, transparent 8deg 30deg, ${hexA(t.light, .35)} 30deg 36deg, transparent 36deg 60deg)`,
-                  maskImage: "radial-gradient(circle, #000 10%, transparent 70%)",
-                  WebkitMaskImage: "radial-gradient(circle, #000 10%, transparent 70%)",
-                }}
+          {/* illustrated stage */}
+          {bundle.showcase && (
+            <div className="relative w-[38%] min-w-[240px] shrink-0 overflow-hidden">
+              <Beams tone={t} intensity={0.75} />
+              <Bloom
+                tone={t}
+                size={260}
+                opacity={0.45}
+                className="top-1/2 left-[58%] -translate-x-1/2 -translate-y-1/2"
               />
-              <div
-                className="anim-pulse-glow absolute top-1/2 left-1/2 size-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[60px]"
-                style={{ background: hexA(t.light, 0.5) }}
+              <CaptureMark
+                size={300}
+                tone={t}
+                strokeWidth={0.32}
+                className="anim-spin-slow absolute top-1/2 left-[58%] -translate-x-1/2 -translate-y-1/2 opacity-40"
               />
               <div className="absolute inset-0 flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={bundle.showcase.src}
                   alt=""
-                  className="anim-float h-full w-auto max-w-none object-contain drop-shadow-[0_20px_32px_rgba(0,0,0,.9)]"
+                  className="anim-float h-[86%] w-auto max-w-none translate-x-[8%] object-contain drop-shadow-[0_22px_34px_rgba(0,0,0,.85)]"
                   loading="lazy"
                 />
               </div>
+              <div
+                className="pointer-events-none absolute inset-y-0 left-0 w-24"
+                style={{ background: "linear-gradient(90deg, rgba(10,7,21,.55), transparent)" }}
+                aria-hidden
+              />
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* footer action bar — sized to match the bigger card */}
-      <div className="relative z-10 flex items-center gap-3 border-t-2 border-black/50 bg-black/55 px-4 py-3">
-        <IconButton title="Preview contents" theme="gray" size={54} onClick={() => onBuy(bundle)}>
-          <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2.2">
-            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" />
-          </svg>
-        </IconButton>
+        {/* action bar */}
+        <div className="relative flex items-center gap-3 border-t border-white/8 bg-black/20 px-5 py-3.5">
+          <IconButton title="Preview contents" theme="gray" size={42} onClick={() => onBuy(bundle)}>
+            <EyeIcon className="size-5" />
+          </IconButton>
+          <IconButton title="Gift to a friend" theme="violet" size={42}>
+            <GiftIcon className="size-5" />
+          </IconButton>
 
-        <div className="flex-1" />
+          <div className="flex-1" />
 
-        {bundle.purchasesLeft !== undefined && (
-          <span className="mr-1 rounded-[6px] bg-black/70 px-2.5 py-1 text-[13px] font-bold text-[var(--text-mid)]">
-            Purchases Left: {bundle.purchasesLeft}
-          </span>
-        )}
-        <IconButton title="Gift to a friend" theme="violet" size={54}>
-          <GiftIcon />
-        </IconButton>
-        <BuyButton price={bundle.price} onClick={() => onBuy(bundle)} height={54} fontSize={20} className="min-w-[180px]" />
+          {bundle.purchasesLeft !== undefined && (
+            <span
+              className="num rounded-full border px-3 py-1 text-[11.5px] font-semibold"
+              style={{ borderColor: hexA(t.base, 0.28), color: t.light, background: hexA(t.base, 0.1) }}
+            >
+              {bundle.purchasesLeft} left
+            </span>
+          )}
+          <BuyButton price={bundle.price} onClick={() => onBuy(bundle)} height={48} fontSize={16} theme={bundle.theme} className="min-w-[176px]" />
+        </div>
       </div>
     </div>
   );

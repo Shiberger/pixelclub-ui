@@ -6,10 +6,6 @@ export function formatQty(n: number) {
   return n.toLocaleString("en-US");
 }
 
-/** Repeating swirl watermark seen inside every reward tile in the ref. */
-const SWIRL =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 42 42'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.16' stroke-width='2'%3E%3Cpath d='M21 8a13 13 0 1 0 13 13 9 9 0 1 1-9-9'/%3E%3C/g%3E%3C/svg%3E\")";
-
 interface Props {
   stack: ItemStack;
   size?: number;
@@ -18,19 +14,28 @@ interface Props {
   dimmed?: boolean;
 }
 
-export function ItemChip({ stack, size = 60, showLabel = true, className, dimmed }: Props) {
+/**
+ * A collectible tile. Rarity is expressed as light — a corner wash, a hairline
+ * and a single dot — rather than a coloured frame, so a tray of mixed
+ * rarities stays calm and the artwork stays the loudest thing in the tile.
+ */
+export function ItemChip({ stack, size = 64, showLabel = true, className, dimmed }: Props) {
   const r = RARITY[stack.rarity];
+  const label = showLabel && size >= 80;
 
   return (
     <div
-      className={cn("group relative shrink-0 overflow-hidden rounded-[8px] border-2", className)}
+      className={cn("group relative shrink-0 overflow-hidden rounded-[16px] border", className)}
       style={{
         width: size,
         height: size,
-        borderColor: hexA(r.base, 0.95),
-        background: `${SWIRL}, linear-gradient(160deg, ${hexA(r.base, 0.55)}, ${hexA(r.dark, 0.9)} 70%, rgba(6,6,10,.95))`,
-        boxShadow: `inset 0 1px 0 ${hexA(r.light, 0.5)}, inset 0 -2px 0 rgba(0,0,0,.5), 0 0 10px ${hexA(r.base, 0.4)}`,
-        filter: dimmed ? "grayscale(.75) brightness(.55)" : undefined,
+        background: `
+          radial-gradient(120% 110% at 12% 0%, ${hexA(r.base, 0.34)} 0%, transparent 64%),
+          linear-gradient(170deg, rgba(255,255,255,.07), rgba(255,255,255,.02) 55%, rgba(0,0,0,.22))
+        `,
+        borderColor: hexA(r.base, 0.32),
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,.14), 0 10px 22px -14px rgba(0,0,0,.85), 0 0 20px -12px ${hexA(r.base, 0.9)}`,
+        filter: dimmed ? "grayscale(.8) brightness(.6)" : undefined,
       }}
       title={`${formatQty(stack.qty)}× ${stack.name}`}
     >
@@ -39,21 +44,42 @@ export function ItemChip({ stack, size = 60, showLabel = true, className, dimmed
         <img
           src={stack.sprite}
           alt={stack.name}
-          className="pixelated absolute inset-0 m-auto size-[74%] object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,.7)] transition-transform duration-200 group-hover:scale-110"
+          className="absolute inset-0 m-auto object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,.6)] transition-transform duration-300 group-hover:scale-[1.09]"
+          style={{ width: label ? "58%" : "68%", height: label ? "58%" : "68%", marginTop: label ? "-14%" : undefined }}
           loading="lazy"
         />
       ) : (
-        <span className="absolute inset-0 grid place-items-center text-[26px]">{stack.emoji}</span>
+        <span
+          className="absolute inset-0 grid place-items-center transition-transform duration-300 group-hover:scale-[1.09]"
+          style={{ fontSize: size * 0.4, marginTop: label ? -size * 0.07 : 0 }}
+        >
+          {stack.emoji}
+        </span>
       )}
 
-      {/* count badge */}
-      <span className="absolute top-[4px] left-[4px] rounded-[5px] bg-black/80 px-[6px] py-[2px] text-[13px] leading-[16px] font-bold text-white tabular-nums">
-        {formatQty(stack.qty)}x
+      <span
+        className="num absolute top-1.5 left-1.5 rounded-full px-1.5 py-[1px] text-[11px] leading-[15px] font-bold text-white"
+        style={{ background: "rgba(6,4,14,.6)", backdropFilter: "blur(4px)" }}
+      >
+        {formatQty(stack.qty)}
       </span>
 
-      {/* label */}
-      {showLabel && (
-        <span className="txt-stroke-xs absolute inset-x-0 bottom-0 line-clamp-2 bg-gradient-to-t from-black/88 to-transparent px-1.5 pt-3 pb-[3px] text-center text-[12px] leading-[14px] font-bold text-white">
+      <span
+        className="absolute top-2 right-2 size-[6px] rounded-full"
+        style={{ background: r.base, boxShadow: `0 0 7px ${hexA(r.base, 0.95)}` }}
+        aria-hidden
+      />
+
+      {label && (
+        <span
+          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(6,4,14,.92)] via-[rgba(6,4,14,.72)] to-transparent px-1.5 pt-4 pb-1 text-center text-[10.5px] leading-[1.2] font-semibold text-white/90"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
           {stack.name}
         </span>
       )}

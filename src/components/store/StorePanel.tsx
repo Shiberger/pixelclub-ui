@@ -33,19 +33,19 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
   return (
     <Panel
       title="Store"
-      theme="magenta"
+      kicker="Season shop"
+      theme="violet"
       onClose={onClose}
-      width="min(1320px, 96vw)"
-      height="min(760px, 92vh)"
-      headerSlot={<TabBar tabs={TABS} value={tab} onChange={setTab} theme="magenta" />}
+      width="min(1280px, 94vw)"
+      height="min(760px, 100%)"
+      headerSlot={<TabBar tabs={TABS} value={tab} onChange={setTab} theme="violet" />}
     >
-      <div key={tab} className="scroll-y anim-rise min-h-0 flex-1 px-3.5 pt-2 pb-4">
+      <div key={tab} className="scroll-y anim-rise min-h-0 flex-1 px-6 pt-5 pb-7">
         {tab === "bundles" && (
           <>
-            <SectionHeader label="Bundles" theme="magenta" />
+            <SectionHeader label="Featured bundles" theme="magenta" caption="Limited stock, best value per Point" />
             {Object.entries(bundleGroups).map(([group, rows]) => (
               <section key={group}>
-                <GroupBar label={group} />
                 {rows.map((b) => (
                   <BundleCard key={b.id} bundle={b} onBuy={(x) => onPurchase(x.name)} />
                 ))}
@@ -56,13 +56,14 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
 
         {tab === "ranks" && (
           <>
-            <SectionHeader label="Ranks" theme="gold" />
+            <SectionHeader label="Ranks & membership" theme="violet" caption="Permanent perks, one purchase" />
             {Object.entries(rankGroups).map(([group, rows]) => (
-              <section key={group} className="mb-4">
-                <GroupBar label={group} />
+              <section key={group} className="mb-6">
+                <GroupBar label={group} count={rows.length} />
                 <div className="grid grid-cols-2 items-stretch gap-4">
-                  {rows.map((r) => (
-                    <RankCard key={r.id} rank={r} onBuy={(x) => onPurchase(x.name)} />
+                  {/* rows arrive highest tier first, so the tier number counts down */}
+                  {rows.map((r, i) => (
+                    <RankCard key={r.id} rank={r} tier={rows.length - i} onBuy={(x) => onPurchase(x.name)} />
                   ))}
                 </div>
               </section>
@@ -72,11 +73,11 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
 
         {tab === "items" && (
           <>
-            <SectionHeader label="Items" theme="cyan" />
+            <SectionHeader label="Items" theme="cyan" caption="Keys, enchants, skins and boosters" />
             {Object.entries(packGroups).map(([group, rows]) => (
-              <section key={group} className="mb-4">
-                <GroupBar label={group} />
-                <div className="grid grid-cols-3 gap-4">
+              <section key={group} className="mb-6">
+                <GroupBar label={group} count={rows.length} />
+                <div className="grid grid-cols-4 gap-4">
                   {rows.map((p) => (
                     <PackCard key={p.id} pack={p} onBuy={(x) => onPurchase(x.name)} />
                   ))}

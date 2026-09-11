@@ -2,27 +2,28 @@
 
 import type { ReactNode } from "react";
 import type { Price } from "@/data/types";
-import { THEME, type ThemeName, hexA } from "@/lib/theme";
+import { THEME, type ThemeName, fill, hexA } from "@/lib/theme";
+import { PointToken } from "./icons";
 import { cn } from "@/lib/cn";
-
-const PRICE_ICON: Record<Price["kind"], string> = {
-  point: "🪙",
-};
 
 export function formatPrice(p: Price) {
   return p.amount.toLocaleString("en-US");
 }
 
-/** The green price button that closes every purchasable card. */
+/**
+ * The primary action: a filled violet pill. The price sits in its own recessed
+ * capsule on the right so the label stays readable at a glance, and a single
+ * slow specular pass keeps it feeling alive without shouting.
+ */
 export function BuyButton({
   price,
   label = "Buy",
   onClick,
   disabled,
   className,
-  theme = "green",
-  height = 42,
-  fontSize = 16,
+  theme = "violet",
+  height = 44,
+  fontSize = 15,
 }: {
   price?: Price;
   label?: string;
@@ -30,42 +31,48 @@ export function BuyButton({
   disabled?: boolean;
   className?: string;
   theme?: ThemeName;
-  /** Override the button's pixel height (and, by extension, its font/price size) — for scaling with an oversized card. */
   height?: number;
   fontSize?: number;
 }) {
   const t = THEME[theme];
+
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "pressable bevel-sm font-display txt-stroke-sm relative flex min-w-[132px] items-center justify-between gap-3 rounded-[9px] border-2 border-black/70 px-4 text-white disabled:pointer-events-none disabled:opacity-45 disabled:grayscale",
+        "press sheen ring-focus font-display relative flex min-w-[136px] items-center justify-center gap-3 rounded-full px-5 text-white",
+        "disabled:pointer-events-none disabled:opacity-40 disabled:saturate-50",
         className,
       )}
-      style={{ background: `linear-gradient(180deg, ${t.light}, ${t.base} 52%, ${t.dark})`, height, fontSize }}
+      style={{ ...fill(t), height, fontSize, fontWeight: 600 }}
     >
-      <span>{label}</span>
+      <span className="relative z-10 whitespace-nowrap">{label}</span>
       {price && (
-        <span className="flex items-center gap-1 tabular-nums">
+        <span
+          className="num relative z-10 flex items-center gap-1.5 rounded-full px-2.5 py-0.5"
+          style={{ background: hexA("#1a0b33", 0.42), fontSize: fontSize * 0.95 }}
+        >
           {price.was && (
-            <s className="txt-stroke-xs mr-1 opacity-70" style={{ fontSize: fontSize * 0.75 }}>{formatPrice({ ...price, amount: price.was })}</s>
+            <s className="opacity-55" style={{ fontSize: fontSize * 0.78 }}>
+              {formatPrice({ ...price, amount: price.was })}
+            </s>
           )}
           {formatPrice(price)}
-          <span style={{ WebkitTextStroke: "0", fontSize: fontSize * 0.8 }}>{PRICE_ICON[price.kind]}</span>
+          <PointToken size={fontSize * 1.05} />
         </span>
       )}
     </button>
   );
 }
 
-/** Small square utility button (preview eye, gift, filters…). */
+/** Circular glass utility button — preview, gift, paging. */
 export function IconButton({
   children,
   onClick,
   theme = "violet",
   title,
-  size = 42,
+  size = 44,
   className,
 }: {
   children: ReactNode;
@@ -76,16 +83,23 @@ export function IconButton({
   className?: string;
 }) {
   const t = THEME[theme];
+
   return (
     <button
       onClick={onClick}
       title={title}
       aria-label={title}
-      className={cn("pressable bevel-sm grid shrink-0 place-items-center rounded-[9px] border-2 border-black/70 text-white", className)}
+      className={cn(
+        "press ring-focus grid shrink-0 place-items-center rounded-full border transition-colors",
+        className,
+      )}
       style={{
         width: size,
         height: size,
-        background: `linear-gradient(180deg, ${hexA(t.light, .95)}, ${t.base} 52%, ${t.dark})`,
+        background: `linear-gradient(180deg, ${hexA(t.base, 0.24)}, ${hexA(t.base, 0.08)})`,
+        borderColor: hexA(t.base, 0.36),
+        color: t.light,
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,.16), 0 8px 20px -12px ${hexA(t.base, 0.8)}`,
       }}
     >
       {children}
@@ -93,7 +107,7 @@ export function IconButton({
   );
 }
 
-/** Dark neutral button (Claim All, secondary actions). */
+/** Neutral glass pill for secondary actions. */
 export function GhostButton({
   children,
   onClick,
@@ -110,7 +124,8 @@ export function GhostButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "pressable bevel-sm font-display txt-stroke-sm h-[42px] rounded-[9px] border-2 border-black/70 bg-[linear-gradient(180deg,#5a5a6e,#33333f_55%,#22222c)] px-5 text-[16px] text-white disabled:pointer-events-none disabled:opacity-40",
+        "press ring-focus glass-tile font-display h-11 rounded-full px-5 text-[14px] text-[var(--text-mid)]",
+        "hover:text-white disabled:pointer-events-none disabled:opacity-35",
         className,
       )}
     >

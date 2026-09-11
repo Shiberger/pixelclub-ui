@@ -1,65 +1,108 @@
 "use client";
 
 import type { Rank } from "@/data/types";
-import { THEME, type ThemeName, cardSkinFlat, hexA, itemPattern } from "@/lib/theme";
+import { type Accent, THEME, type ThemeName, hexA, prismField, surfaceQuiet } from "@/lib/theme";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
 import { CardBadge } from "@/components/ui/CardBadge";
+import { Bloom, CaptureMark, PrismMark } from "@/components/ui/Motif";
 import { GiftIcon } from "@/components/ui/icons";
 
 /**
- * One accent per section instead of per rank — a shelf of individually
- * multicolored rank tiers reads as noise; a single gold thread for "Ranks"
- * and a single cyan thread for "Pixel Prime" reads as two clear tiers.
+ * One accent per section, not per tier: a shelf of individually coloured ranks
+ * reads as noise. "Ranks" runs violet, "Pixel Prime" runs ice — the tier
+ * itself is communicated by the badge, the name and the price.
  */
 const GROUP_THEME: Record<string, ThemeName> = {
-  Ranks: "gold",
+  Ranks: "violet",
   "Pixel Prime": "cyan",
 };
 
 /**
- * "Gamepass" row tile, 2-up per shelf: a bare, oversized icon on the left
- * (no frame — just a soft glow behind it), name/blurb/perks filling the
- * middle, and a bottom bar with the buy button parked on the right —
- * echoes the Gamepasses layout in Store_4.png. Kept to 2 columns (rather
- * than one full-width row) so the hover pop-out has room to scale up
- * without spilling past the panel edges.
+ * The tier emblem — a prism held inside the capture ring, with one pip per
+ * tier. Built from the motif rather than an emoji: the emoji set the data
+ * carries (⭐🌌🌠🌑) reads as a row of unrelated stickers, and some render as
+ * dark rectangles that fight the violet capsule.
  */
-export function RankCard({ rank, onBuy }: { rank: Rank; onBuy: (r: Rank) => void }) {
-  const t = THEME[GROUP_THEME[rank.group] ?? rank.theme];
+function RankEmblem({ tier, tone, size = 84 }: { tier: number; tone: Accent; size?: number }) {
+  const pips = Math.min(tier, 6);
+  /** higher tiers carry more light and a wider ring, so the shelf reads as a ladder */
+  const lift = pips / 6;
 
   return (
-    <div className="relative flex flex-col pt-5">
-      {rank.highlight && <CardBadge color={THEME.gold}>★ {rank.highlight}</CardBadge>}
-      <div className="card-hover relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[14px] border-2" style={cardSkinFlat(t)}>
-        <div className="pointer-events-none absolute inset-0 opacity-[.10]" style={{ backgroundImage: itemPattern(t.light), backgroundSize: "56px 56px" }} />
-        <div className="anim-pulse-glow pointer-events-none absolute -top-12 -right-12 size-[180px] rounded-full blur-[55px] opacity-40" style={{ background: t.base }} />
+    <div className="relative grid shrink-0 place-items-center" style={{ width: size, height: size }}>
+      <Bloom tone={tone} size={size * 1.1} opacity={0.28 + 0.32 * lift} className="inset-0 m-auto" />
+      {pips >= 5 && (
+        <CaptureMark size={size * 1.22} tone={tone} strokeWidth={0.4} className="absolute opacity-45" />
+      )}
+      <div
+        className="absolute inset-0 rounded-full border"
+        style={{
+          borderColor: hexA(tone.base, 0.45),
+          background: `radial-gradient(120% 120% at 30% 18%, ${hexA(tone.light, 0.38)}, ${hexA(tone.dark, 0.88)} 72%)`,
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,.35), inset 0 -8px 18px rgba(0,0,0,.45)",
+        }}
+      />
+      <CaptureMark size={size} tone={tone} strokeWidth={0.5} className="absolute opacity-70" />
+      <PrismMark
+        size={size * (0.4 + 0.1 * lift)}
+        tone={{ ...tone, base: tone.light }}
+        strokeWidth={1.1}
+        className="relative -translate-y-[6%]"
+      />
 
-        <div className="relative z-10 flex flex-1 items-start gap-4 p-4">
-          <div className="relative grid size-[92px] shrink-0 place-items-center">
-            <div className="anim-pulse-glow absolute inset-0 rounded-full blur-[22px]" style={{ background: hexA(t.base, 0.5) }} />
-            <span className="relative text-[58px] leading-none" style={{ filter: `drop-shadow(0 3px 7px rgba(0,0,0,.6)) drop-shadow(0 0 14px ${hexA(t.base, .9)})` }}>
-              {rank.icon}
-            </span>
-          </div>
+      <div className="absolute bottom-[13%] flex gap-[3px]">
+        {Array.from({ length: pips }, (_, i) => (
+          <span
+            key={i}
+            className="size-[4px] rounded-full"
+            style={{ background: tone.light, boxShadow: `0 0 5px ${hexA(tone.light, 0.9)}` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function RankCard({ rank, tier, onBuy }: { rank: Rank; tier: number; onBuy: (r: Rank) => void }) {
+  const theme = GROUP_THEME[rank.group] ?? "violet";
+  const t = THEME[theme];
+  const isRank = rank.group === "Ranks";
+
+  return (
+    <div className="relative flex flex-col pt-4">
+      {rank.highlight && <CardBadge color={THEME.magenta}>{rank.highlight}</CardBadge>}
+
+      <div className="lift relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[22px] border" style={surfaceQuiet(t)}>
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[.05]"
+          style={{ backgroundImage: prismField(t.light), backgroundSize: "72px 84px" }}
+          aria-hidden
+        />
+
+        <div className="relative flex flex-1 items-start gap-4 p-5">
+          <RankEmblem tier={tier} tone={t} />
+
           <div className="min-w-0 flex-1">
-            <h3 className="font-display txt-stroke-sm text-[21px] leading-tight" style={{ color: t.light, textShadow: `0 0 14px ${hexA(t.base, .85)}` }}>
-              {rank.name}
-            </h3>
-            <p className="mt-1 mb-2 text-[13.5px] leading-snug font-semibold text-white/80">{rank.blurb}</p>
-            <ul className="space-y-1">
+            <div className="kicker mb-1 leading-none">{isRank ? `Tier ${tier}` : "Membership"}</div>
+            <h3 className="font-display-bold text-[21px] leading-tight text-white">{rank.name}</h3>
+            <p className="mt-1 mb-3 text-[13px] leading-snug text-[var(--text-mid)]">{rank.blurb}</p>
+            <ul className="space-y-1.5">
               {rank.perks.map((p) => (
-                <li key={p} className="flex items-start gap-1.5 text-[13px] leading-tight font-semibold text-white/95">
-                  <span className="mt-[4px] size-[5px] shrink-0 rounded-full" style={{ background: t.base, boxShadow: `0 0 5px ${hexA(t.base, .9)}` }} />
+                <li key={p} className="flex items-start gap-2 text-[12.5px] leading-snug text-white/85">
+                  <CaptureMark size={12} tone={t} strokeWidth={2.6} className="mt-[3px] shrink-0" />
                   {p}
                 </li>
               ))}
             </ul>
           </div>
         </div>
-        <div className="relative z-10 flex items-center gap-2.5 border-t-2 border-black/50 bg-black/55 px-4 py-3">
+
+        <div className="relative flex items-center gap-2.5 border-t border-white/8 bg-black/20 px-5 py-3.5">
+          <IconButton title="Gift to a friend" theme="violet" size={40}>
+            <GiftIcon className="size-[18px]" />
+          </IconButton>
           <div className="flex-1" />
-          <IconButton title="Gift to a friend" theme="violet" size={46}><GiftIcon className="size-5" /></IconButton>
-          <BuyButton price={rank.price} onClick={() => onBuy(rank)} height={46} fontSize={17} className="min-w-[170px]" />
+          <BuyButton price={rank.price} onClick={() => onBuy(rank)} height={44} fontSize={15} theme={theme} className="min-w-[168px]" />
         </div>
       </div>
     </div>

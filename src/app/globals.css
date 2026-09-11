@@ -1,217 +1,412 @@
 @import "tailwindcss";
 
-/* ============================================================
-   PixelClub UI — Design System
-   Extracted from ref-uxui (Roblox-style anime game HUD)
-   ============================================================ */
+/* ============================================================================
+   PixelClub — Design 2.0 · "Prism Capture"
+
+   Modern-premium instead of chunky-arcade: one translucent surface layer,
+   violet light from the logo, cinematic beams for depth, and a geometric
+   capture/prism motif (ring + divider + centre pip, isometric cube) carried
+   through every component. No pixel chrome, no ornate frames, no nested
+   panels — the game world stays visible through the UI.
+   ============================================================================ */
 
 @theme inline {
   --font-display: var(--font-display-face);
-  --font-ui: var(--font-fredoka);
-  --font-pixel: var(--font-pixel-face);
+  --font-ui: var(--font-ui-face);
 }
 
 :root {
   color-scheme: dark;
 
-  /* --- surfaces --- */
-  --surface-0: #05050a;
-  --surface-1: #0b0b12;
-  --surface-2: #13131c;
-  --surface-3: #1c1c28;
-  --surface-4: #262636;
+  /* --- ink: near-black with a violet cast --- */
+  --ink-0: #06040d;
+  --ink-1: #0a0715;
+  --ink-2: #110c20;
+  --ink-3: #18112c;
+  --ink-4: #22193c;
+
+  /* --- violet ramp, taken from the logo --- */
+  --v-900: #230a4f;
+  --v-800: #341079;
+  --v-700: #4d18ad;
+  --v-600: #6d28e0;
+  --v-500: #8b5cf6;
+  --v-400: #a98bff;
+  --v-300: #cbb6ff;
+
+  /* --- lavender-pink highlight --- */
+  --p-600: #cf3ce8;
+  --p-500: #ef6adc;
+  --p-400: #ff9ae8;
+  --p-300: #ffc9f2;
+
+  /* --- cool + semantic accents, used sparingly --- */
+  --ice-500: #56cffd;
+  --ice-300: #a5e9ff;
+  --mint-500: #3fdca4;
+  --mint-300: #a6f2d5;
+  --coral-500: #ff5f7a;
+  --amber-400: #ffc978;
 
   /* --- text --- */
   --text-hi: #ffffff;
-  --text-mid: #b9b9cc;
-  --text-lo: #7a7a90;
+  --text-mid: #c8bfe6;
+  --text-lo: #8b81ae;
 
-  /* --- brand / accents --- */
-  --magenta: #c026d3;
-  --magenta-lt: #f065ff;
-  --violet: #8b2fe8;
-  --cyan: #22d3ee;
-  --cyan-lt: #7ef0ff;
-  --green: #7ed321;
-  --green-lt: #a8f03c;
-  --green-dk: #3f8f06;
-  --gold: #fbbf24;
-  --gold-lt: #fde68a;
-  --red: #ef2b45;
-  --red-lt: #ff6b7d;
-  --blue: #3b82f6;
-  --orange: #fb923c;
-
-  /* --- rarity --- */
-  --r-common: #9aa3b2;
-  --r-uncommon: #4ade80;
-  --r-rare: #38bdf8;
-  --r-epic: #c084fc;
-  --r-legend: #fbbf24;
-  --r-mythic: #fb5a7d;
+  /* --- elevation --- */
+  --edge: rgba(255, 255, 255, 0.09);
+  --edge-hi: rgba(255, 255, 255, 0.16);
 }
 
-* { -webkit-tap-highlight-color: transparent; }
+* {
+  -webkit-tap-highlight-color: transparent;
+}
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
-  background: var(--surface-0);
+  background: var(--ink-0);
   color: var(--text-hi);
   font-family: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
   overflow: hidden;
   overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ============================================================
-   Typography — chunky stroked game text
-   ============================================================ */
-/* Minecraft-style pixel type, used by the in-game HUD layer */
-.font-pixel {
-  font-family: var(--font-pixel), ui-monospace, monospace;
-  font-weight: 500;
-  letter-spacing: .02em;
-  -webkit-font-smoothing: none;
-}
-
+/* ============================================================================
+   Typography — geometric display, humanist UI. No strokes, no outlines.
+   ============================================================================ */
 .font-display {
   font-family: var(--font-display), var(--font-ui), sans-serif;
-  font-weight: 800;
-  letter-spacing: .01em;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+}
+.font-display-bold {
+  font-family: var(--font-display), var(--font-ui), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.022em;
 }
 
-/* Outlined text like the reference titles */
-.txt-stroke {
-  paint-order: stroke fill;
-  -webkit-text-stroke: 3px rgba(0, 0, 0, .85);
-  text-shadow: 0 2px 0 rgba(0, 0, 0, .6);
-}
-.txt-stroke-sm { -webkit-text-stroke: 2px rgba(0, 0, 0, .8); paint-order: stroke fill; }
-.txt-stroke-xs { -webkit-text-stroke: 1.5px rgba(0, 0, 0, .75); paint-order: stroke fill; }
-
-.txt-grad {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+/* Small all-caps label used for section kickers and meta rows. */
+.kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-lo);
 }
 
-/* ============================================================
-   Bevel — the signature chunky 3D button/panel edge
-   ============================================================ */
-.bevel {
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ============================================================================
+   Surfaces — a single translucent layer, lit from the top edge.
+   ============================================================================ */
+.glass {
+  background: linear-gradient(
+    168deg,
+    rgba(45, 30, 78, 0.72) 0%,
+    rgba(17, 12, 32, 0.82) 48%,
+    rgba(8, 6, 17, 0.9) 100%
+  );
+  backdrop-filter: blur(20px) saturate(135%);
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+  border: 1px solid var(--edge);
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, .28),
-    inset 0 -3px 0 rgba(0, 0, 0, .45),
-    0 3px 0 rgba(0, 0, 0, .55),
-    0 5px 14px rgba(0, 0, 0, .55);
-}
-.bevel-sm {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .25),
-    inset 0 -2px 0 rgba(0, 0, 0, .4),
-    0 2px 0 rgba(0, 0, 0, .5),
-    0 3px 8px rgba(0, 0, 0, .45);
-}
-.bevel-inset {
-  box-shadow:
-    inset 0 3px 8px rgba(0, 0, 0, .75),
-    inset 0 -1px 0 rgba(255, 255, 255, .07);
+    inset 0 1px 0 var(--edge-hi),
+    0 20px 46px -22px rgba(0, 0, 0, 0.92);
 }
 
-/* Interactive press feel */
-.pressable { transition: transform .09s ease, filter .12s ease; will-change: transform; }
-.pressable:hover { transform: translateY(-1px); filter: brightness(1.12); }
-.pressable:active { transform: translateY(2px); filter: brightness(.94); }
+/* Lighter variant for cards that sit inside a glass panel. */
+.glass-tile {
+  background: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.028) 46%,
+    rgba(255, 255, 255, 0.014) 100%
+  );
+  border: 1px solid var(--edge);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 28px -16px rgba(0, 0, 0, 0.8);
+}
 
-/* Store card hover — a crisp white outline + a touch of shading, so it's
-   clear which item you're pointing at, without a scale/pop that throws
-   full-width rows out of proportion. Needs the card itself to be
-   `relative overflow-hidden` (all store cards already are). */
-.card-hover { outline: 2px solid transparent; outline-offset: -2px; transition: outline-color .15s ease; }
-.card-hover::after {
+/**
+ * HUD variant. Elements that float directly on the world need a darker base
+ * than elements inside a panel — the sky behind them can be almost white, and
+ * label text has to survive it.
+ */
+.glass-hud {
+  background: linear-gradient(
+    168deg,
+    rgba(28, 18, 52, 0.74) 0%,
+    rgba(12, 8, 24, 0.8) 55%,
+    rgba(7, 5, 16, 0.84) 100%
+  );
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 16px 36px -18px rgba(0, 0, 0, 0.95);
+}
+
+/* Recessed strip — search fields, trays, progress tracks. */
+.inset {
+  background: rgba(4, 3, 10, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================================================
+   Motion — restrained. Things breathe and lift; nothing bounces.
+   ============================================================================ */
+.lift {
+  transition:
+    transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.24s ease,
+    border-color 0.24s ease;
+  will-change: transform;
+}
+.lift:hover {
+  transform: translateY(-3px);
+  border-color: rgba(169, 139, 255, 0.5);
+  box-shadow:
+    inset 0 1px 0 var(--edge-hi),
+    0 26px 54px -22px rgba(0, 0, 0, 0.95),
+    0 0 34px -8px rgba(139, 92, 246, 0.42);
+}
+
+.press {
+  transition:
+    transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.16s ease,
+    box-shadow 0.2s ease;
+}
+.press:hover {
+  filter: brightness(1.08);
+}
+.press:active {
+  transform: scale(0.975);
+}
+
+@keyframes d2-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes d2-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Panel entrance — the capture "open": a quick unfold from the centre line. */
+@keyframes d2-capture-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.965) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes d2-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+@keyframes d2-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+@keyframes d2-sweep {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  45%,
+  100% {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+@keyframes d2-sway {
+  0%,
+  100% {
+    transform: translateX(-2%) rotate(-1.2deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(2%) rotate(1.2deg);
+    opacity: 0.85;
+  }
+}
+@keyframes d2-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes d2-mote {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0);
+  }
+  15%,
+  70% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) translateX(26px);
+  }
+}
+
+.anim-rise {
+  animation: d2-rise 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.anim-fade {
+  animation: d2-fade 0.24s ease both;
+}
+.anim-panel {
+  animation: d2-capture-in 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.anim-float {
+  animation: d2-float 5.5s ease-in-out infinite;
+}
+.anim-breathe {
+  animation: d2-breathe 4.5s ease-in-out infinite;
+}
+.anim-sway {
+  animation: d2-sway 11s ease-in-out infinite;
+}
+.anim-spin-slow {
+  animation: d2-spin 40s linear infinite;
+}
+
+/* One slow specular pass — reserved for premium surfaces only. */
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::after {
   content: "";
-  position: absolute; inset: 0;
-  background: rgba(0, 0, 0, 0);
-  transition: background .15s ease;
+  position: absolute;
+  inset: -20% 0;
+  width: 26%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: d2-sweep 5.5s ease-in-out infinite;
   pointer-events: none;
 }
-.card-hover:hover { outline-color: rgba(255, 255, 255, .85); }
-.card-hover:hover::after { background: rgba(0, 0, 0, .2); }
 
-/* ============================================================
-   Scrollbars — thin, game-styled
-   ============================================================ */
-.scroll-y { overflow-y: auto; overflow-x: hidden; scrollbar-gutter: stable; }
-.scroll-x { overflow-x: auto; overflow-y: hidden; }
-.scroll-y::-webkit-scrollbar, .scroll-x::-webkit-scrollbar { width: 10px; height: 10px; }
-.scroll-y::-webkit-scrollbar-track, .scroll-x::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, .5); border-radius: 99px;
+/* ============================================================================
+   Light — the cinematic layer: volumetric shafts and soft bloom.
+   ============================================================================ */
+.beam {
+  position: absolute;
+  pointer-events: none;
+  filter: blur(26px);
+  mix-blend-mode: screen;
+  transform-origin: top center;
 }
-.scroll-y::-webkit-scrollbar-thumb, .scroll-x::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #55556b, #2e2e3e);
+
+.bloom {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(50px);
+}
+
+/* Fine grain, so large violet washes read as a material rather than a gradient. */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================================
+   Interaction affordances
+   ============================================================================ */
+.ring-focus:focus-visible {
+  outline: 2px solid var(--v-400);
+  outline-offset: 2px;
+}
+
+.scroll-y {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.scroll-y::-webkit-scrollbar,
+.scroll-x::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-y::-webkit-scrollbar-track,
+.scroll-x::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-y::-webkit-scrollbar-thumb,
+.scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(169, 139, 255, 0.28);
   border-radius: 99px;
-  border: 2px solid rgba(0, 0, 0, .6);
 }
-.scroll-y::-webkit-scrollbar-thumb:hover, .scroll-x::-webkit-scrollbar-thumb:hover { background: #6b6b85; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { scrollbar-width: none; }
-
-/* ============================================================
-   Animations
-   ============================================================ */
-@keyframes pc-pop {
-  0%   { opacity: 0; transform: scale(.88) translateY(14px); }
-  60%  { opacity: 1; transform: scale(1.015) translateY(0); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+.scroll-y::-webkit-scrollbar-thumb:hover,
+.scroll-x::-webkit-scrollbar-thumb:hover {
+  background: rgba(169, 139, 255, 0.5);
 }
-@keyframes pc-fade { from { opacity: 0 } to { opacity: 1 } }
-@keyframes pc-shine {
-  0%   { transform: translateX(-130%) skewX(-18deg); }
-  100% { transform: translateX(330%) skewX(-18deg); }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-@keyframes pc-shine-sweep {
-  0%   { transform: translateX(-160%) skewX(-20deg); }
-  22%  { transform: translateX(420%) skewX(-20deg); }
-  100% { transform: translateX(420%) skewX(-20deg); }
-}
-@keyframes pc-float {
-  0%, 100% { transform: translateY(0) }
-  50%      { transform: translateY(-10px) }
-}
-@keyframes pc-glow-pulse {
-  0%, 100% { opacity: .55 }
-  50%      { opacity: 1 }
-}
-@keyframes pc-spin-slow { to { transform: rotate(360deg) } }
-@keyframes pc-rise {
-  0%   { opacity: 0; transform: translateY(16px) }
-  100% { opacity: 1; transform: translateY(0) }
+.no-scrollbar {
+  scrollbar-width: none;
 }
 
-.anim-pop   { animation: pc-pop .28s cubic-bezier(.2,.9,.3,1.2) both; }
-.anim-fade  { animation: pc-fade .2s ease both; }
-.anim-float { animation: pc-float 4.5s ease-in-out infinite; }
-.anim-pulse-glow { animation: pc-glow-pulse 2.4s ease-in-out infinite; }
-.anim-spin-slow { animation: pc-spin-slow 26s linear infinite; }
-.anim-rise  { animation: pc-rise .32s cubic-bezier(.2,.9,.3,1) both; }
-
-/* Sweeping shine used on premium buttons / cards */
-.shine { position: relative; overflow: hidden; }
-.shine::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent);
-  width: 36%;
-  animation: pc-shine 3.6s ease-in-out infinite;
-  pointer-events: none;
+/* The Minecraft layer underneath keeps its own crisp texels. */
+.pixelated {
+  image-rendering: pixelated;
 }
-
-/* ============================================================
-   Pixel-art rendering for sprite assets
-   ============================================================ */
-.pixelated { image-rendering: pixelated; }
 
 @media (prefers-reduced-motion: reduce) {
-  .anim-pop, .anim-fade, .anim-float, .anim-pulse-glow, .anim-spin-slow, .anim-rise,
-  .shine::after, .shine-sweep { animation: none !important; }
+  .anim-rise,
+  .anim-fade,
+  .anim-panel,
+  .anim-float,
+  .anim-breathe,
+  .anim-sway,
+  .anim-spin-slow,
+  .sheen::after {
+    animation: none !important;
+  }
+  .lift:hover {
+    transform: none;
+  }
 }

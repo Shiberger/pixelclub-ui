@@ -3,15 +3,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Panel } from "@/components/ui/Panel";
 import { BuyButton, GhostButton, IconButton } from "@/components/ui/Buttons";
-import { GiftIcon } from "@/components/ui/icons";
+import { Beams, Bloom, CaptureMark, Motes, PrismMark } from "@/components/ui/Motif";
+import { ChevronIcon, GiftIcon, LockIcon, SparkIcon } from "@/components/ui/icons";
 import { RewardCell } from "./RewardCell";
 import { SEASON } from "@/data/battlepass";
 import type { BattlepassReward } from "@/data/types";
-import { THEME, hexA } from "@/lib/theme";
+import { THEME, hexA, surface } from "@/lib/theme";
 
 const LEVEL_BOOSTS = [1, 10, 50] as const;
-const COL_W = 184;
-const COL_GAP = 14;
+const COL_W = 182;
+const COL_GAP = 12;
 
 export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; onPurchase: (label: string) => void }) {
   const [premium, setPremium] = useState(SEASON.premiumOwned);
@@ -59,153 +60,193 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
     onPurchase(`${claimable.length} Battlepass rewards`);
   };
 
-  const expPct = (SEASON.exp / SEASON.expPerLevel) * 100;
-  const g = THEME.gold;
-
   const scrollTrack = (dir: -1 | 1) =>
     trackRef.current?.scrollBy({ left: dir * (COL_W + COL_GAP) * 5, behavior: "smooth" });
+
+  const expPct = (SEASON.exp / SEASON.expPerLevel) * 100;
+  const p = THEME.gold; // premium accent: warm lavender
+  const v = THEME.violet;
 
   return (
     <Panel
       title="Battlepass"
+      kicker={`Season ${SEASON.number} · ${SEASON.name} · ends in ${SEASON.endsIn}`}
       theme="gold"
       onClose={onClose}
-      width="min(1180px, 94vw)"
-      height="min(1040px, 94vh)"
+      width="min(1280px, 94vw)"
+      height="min(760px, 100%)"
       headerSlot={
-        <div className="flex w-full items-center gap-3">
-          {/* season + exp */}
-          <div className="min-w-0 flex-1">
-            <div className="flex items-baseline gap-2">
-              <span className="font-display txt-stroke-sm text-[21px]" style={{ color: g.light }}>
-                Level {SEASON.level}
-              </span>
-              <span className="font-display txt-stroke-xs text-[15px] text-white/60">/ {SEASON.maxLevel}</span>
-              <span className="ml-auto text-[11px] font-bold text-[var(--text-mid)] tabular-nums">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-5">
+          {/* season progress */}
+          <div className="min-w-0 max-w-[340px] flex-1">
+            <div className="mb-1.5 flex items-baseline gap-2">
+              <span className="font-display-bold text-[17px] leading-none text-white">Level {SEASON.level}</span>
+              <span className="text-[12px] leading-none text-[var(--text-lo)]">of {SEASON.maxLevel}</span>
+              <span className="num ml-auto text-[11px] leading-none font-semibold text-[var(--text-mid)]">
                 {SEASON.exp.toLocaleString()} / {SEASON.expPerLevel.toLocaleString()} EXP
               </span>
             </div>
-            <div className="bevel-inset relative mt-1 h-[16px] overflow-hidden rounded-full border-2 border-black/70 bg-black/70">
+            <div className="inset relative h-2 overflow-hidden rounded-full">
               <div
-                className="shine h-full rounded-full"
-                style={{ width: `${expPct}%`, background: `linear-gradient(180deg,${g.light},${g.base} 55%,${g.dark})`, boxShadow: `0 0 12px ${hexA(g.base, .8)}` }}
+                className="h-full rounded-full"
+                style={{
+                  width: `${expPct}%`,
+                  background: `linear-gradient(90deg, ${v.base}, ${p.base})`,
+                  boxShadow: `0 0 12px ${hexA(p.base, 0.9)}`,
+                }}
               />
-            </div>
-            <div className="mt-0.5 text-[10.5px] font-semibold text-[var(--text-lo)]">
-              Season {SEASON.number} · {SEASON.name} · ends in {SEASON.endsIn}
             </div>
           </div>
 
-          {LEVEL_BOOSTS.map((n) => (
-            <button
-              key={n}
-              onClick={() => onPurchase(`+${n} Battlepass Level`)}
-              className="pressable bevel-sm font-display txt-stroke-sm h-[42px] rounded-[9px] border-2 border-black/70 px-3 text-[15px] text-white"
-              style={{ background: "linear-gradient(180deg,#6ec4ff,#2b7fe0 55%,#12408c)" }}
-            >
-              +{n} {n === 1 ? "Level" : "Levels"}
-            </button>
-          ))}
+          {/* instant levels */}
+          <div className="flex shrink-0 items-center gap-1.5">
+            {LEVEL_BOOSTS.map((n) => (
+              <button
+                key={n}
+                onClick={() => onPurchase(`+${n} Battlepass Level`)}
+                className="press ring-focus glass-tile flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-[var(--text-mid)] hover:text-white"
+              >
+                <SparkIcon className="size-3.5" />+{n}
+              </button>
+            ))}
+          </div>
         </div>
       }
     >
-      <div className="flex min-h-0 flex-1 gap-3 p-3">
-        {/* ---- premium pass panel ---- */}
+      <div className="flex min-h-0 flex-1 gap-4 p-5">
+        {/* ---- premium pass ---- */}
         <aside
-          className="relative flex w-[440px] shrink-0 flex-col overflow-hidden rounded-[12px] border-2"
-          style={{
-            borderColor: hexA(g.base, .9),
-            background: `linear-gradient(170deg, ${hexA(g.base, .28)}, rgba(10,10,16,.96) 60%)`,
-            boxShadow: `inset 0 1px 0 ${hexA(g.light, .4)}, 0 0 20px ${hexA(g.base, .35)}`,
-          }}
+          className="relative flex w-[330px] shrink-0 flex-col overflow-hidden rounded-[24px] border"
+          style={surface(p)}
         >
-          <div className="relative z-10 px-3 pt-4 text-center">
-            <div className="font-display txt-stroke text-[30px] leading-none" style={{ color: g.light, textShadow: `0 0 16px ${hexA(g.base, .9)}` }}>
-              Premium Pass
+          <Beams tone={p} intensity={0.9} />
+          <Motes count={8} />
+
+          <div className="relative z-10 px-5 pt-5">
+            <div className="flex items-center gap-2">
+              <PrismMark size={15} tone={p} />
+              <span className="kicker leading-none">{premium ? "Unlocked" : "Premium track"}</span>
             </div>
-            <div className="text-[13px] font-bold text-white/70">Season {SEASON.number} · {SEASON.name}</div>
+            <h3 className="font-display-bold mt-2 text-[27px] leading-none text-white">Premium Pass</h3>
           </div>
 
-          <div className="relative min-h-0 flex-1 overflow-hidden">
-            {/* radial stage light + slow-spinning starburst behind the hero, like the bundle showcase art */}
-            <div
-              className="anim-spin-slow absolute top-[46%] left-1/2 size-[460px] -translate-x-1/2 -translate-y-1/2 opacity-60"
-              style={{
-                background: `conic-gradient(from 0deg, ${hexA(g.light, .5)} 0deg 8deg, transparent 8deg 30deg, ${hexA(g.light, .35)} 30deg 36deg, transparent 36deg 60deg)`,
-                maskImage: "radial-gradient(circle, #000 10%, transparent 70%)",
-                WebkitMaskImage: "radial-gradient(circle, #000 10%, transparent 70%)",
-              }}
+          {/* hero stage */}
+          <div className="relative z-0 min-h-0 flex-1">
+            <Bloom tone={p} size={300} opacity={0.5} className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            <CaptureMark
+              size={300}
+              tone={p}
+              strokeWidth={0.3}
+              className="anim-spin-slow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-45"
             />
-            <div className="anim-pulse-glow absolute inset-x-2 top-2 bottom-10 rounded-full blur-[58px]" style={{ background: hexA(g.light, .55) }} />
-            <div className="absolute inset-3 flex items-center justify-center">
-              <div className="h-[82%]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={SEASON.heroSprite}
-                  alt={SEASON.heroName}
-                  className="anim-float h-full w-auto max-w-none object-contain drop-shadow-[0_20px_36px_rgba(0,0,0,.9)]"
-                />
-              </div>
+            <div className="absolute inset-4 flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={SEASON.heroSprite}
+                alt={SEASON.heroName}
+                className="anim-float h-[88%] max-h-[300px] w-auto max-w-none object-contain drop-shadow-[0_24px_38px_rgba(0,0,0,.9)]"
+              />
             </div>
           </div>
 
-          <div className="relative z-10 px-3 pb-3">
-            <p className="mb-2 text-center text-[12.5px] font-semibold text-white/80">
+          <div className="relative z-10 px-5 pb-5">
+            <p className="mb-3 text-[12.5px] leading-snug text-[var(--text-mid)]">
               {premium
-                ? "Premium unlocked — every premium tier is yours to claim!"
-                : "Purchase the Premium Pass to unlock EXCLUSIVE premium tier rewards!"}
+                ? "Every premium tier is yours — claim them from the track whenever you level."
+                : "Unlock all 50 premium tiers, including the season Mount and the Master Ball at Lv 50."}
             </p>
             <div className="flex items-center gap-2">
               <BuyButton
-                label={premium ? "Owned" : "Buy Premium"}
+                label={premium ? "Owned" : "Unlock Premium"}
                 price={premium ? undefined : SEASON.premiumPrice}
                 disabled={premium}
-                theme={premium ? "green" : "cyan"}
-                height={54}
-                fontSize={18}
+                theme={premium ? "green" : "gold"}
+                height={48}
+                fontSize={15}
                 className="min-w-0 flex-1"
-                onClick={() => { setPremium(true); onPurchase("Premium Pass"); }}
+                onClick={() => {
+                  setPremium(true);
+                  onPurchase("Premium Pass");
+                }}
               />
-              <IconButton title="Gift the Premium Pass" theme="violet" size={54}><GiftIcon /></IconButton>
+              <IconButton title="Gift the Premium Pass" theme="violet" size={48}>
+                <GiftIcon className="size-5" />
+              </IconButton>
             </div>
           </div>
         </aside>
 
         {/* ---- reward track ---- */}
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <div className="flex min-h-0 flex-1 gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <div className="flex min-h-0 flex-1 gap-3">
             {/* track labels */}
-            <div className="flex w-[92px] shrink-0 flex-col gap-2 pt-[40px]">
-              <div className="flex flex-1 flex-col items-center justify-center rounded-[9px] border-2 border-black/60 bg-[linear-gradient(180deg,#3a3a4a,#1c1c26)]">
-                <GiftIcon className="size-6" />
-                <span className="font-display txt-stroke-xs text-[14px]">Free</span>
+            <div className="flex w-[84px] shrink-0 flex-col gap-3 pt-[42px]">
+              <div className="glass-tile flex flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl">
+                <GiftIcon className="size-5 text-[var(--text-mid)]" />
+                <span className="kicker leading-none">Free</span>
               </div>
               <div
-                className="flex flex-1 flex-col items-center justify-center rounded-[9px] border-2"
-                style={{ borderColor: hexA(g.base, .9), background: `linear-gradient(180deg, ${hexA(g.base, .45)}, rgba(12,12,18,.95))`, boxShadow: `0 0 14px ${hexA(g.base, .4)}` }}
+                className="flex flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border"
+                style={{
+                  borderColor: hexA(p.base, 0.45),
+                  background: `linear-gradient(180deg, ${hexA(p.base, 0.28)}, ${hexA(p.dark, 0.35)})`,
+                  boxShadow: `0 0 26px -12px ${hexA(p.base, 0.9)}`,
+                }}
               >
-                <span className="text-[24px]">{premium ? "👑" : "🔒"}</span>
-                <span className="font-display txt-stroke-xs text-[14px]" style={{ color: g.light }}>Premium</span>
+                {premium ? (
+                  <PrismMark size={20} tone={p} />
+                ) : (
+                  <span style={{ color: p.light }}>
+                    <LockIcon className="size-5" />
+                  </span>
+                )}
+                <span className="kicker leading-none" style={{ color: p.light }}>
+                  Premium
+                </span>
               </div>
             </div>
 
-            {/* scrollable levels */}
-            <div ref={trackRef} className="scroll-x relative min-h-0 flex-1 rounded-[10px] bg-black/35 p-2">
-              <div className="flex h-full gap-2">
+            {/* levels */}
+            <div ref={trackRef} className="scroll-x inset relative min-h-0 flex-1 rounded-2xl p-3">
+              <div className="relative flex h-full gap-3" style={{ width: byLevel.length * (COL_W + COL_GAP) }}>
+                {/* progress rail behind the level chips */}
+                <span className="absolute top-[14px] right-0 left-0 h-[2px] rounded-full bg-white/10" aria-hidden />
+                <span
+                  className="absolute top-[14px] left-0 h-[2px] rounded-full"
+                  style={{
+                    width: (SEASON.level - 0.5) * (COL_W + COL_GAP),
+                    background: `linear-gradient(90deg, ${v.base}, ${p.base})`,
+                    boxShadow: `0 0 10px ${hexA(p.base, 0.9)}`,
+                  }}
+                  aria-hidden
+                />
+
                 {byLevel.map(([level, row]) => {
                   const current = level === SEASON.level;
+                  const reached = level <= SEASON.level;
                   return (
-                    <div key={level} className="flex h-full shrink-0 flex-col gap-2" style={{ width: COL_W }}>
+                    <div key={level} className="flex h-full shrink-0 flex-col gap-3" style={{ width: COL_W }}>
                       <div
-                        className="grid h-[32px] shrink-0 place-items-center rounded-[6px] border-2 text-[14px] font-black"
+                        className="num relative z-10 mx-auto flex h-[30px] items-center gap-1.5 rounded-full border px-3 text-[12px] font-bold"
                         style={
                           current
-                            ? { borderColor: g.light, background: `linear-gradient(180deg,${g.base},${g.dark})`, color: "#fff", boxShadow: `0 0 12px ${hexA(g.base, .9)}` }
-                            : { borderColor: "rgba(0,0,0,.6)", background: "linear-gradient(180deg,#2c2c3a,#16161f)", color: "var(--text-mid)" }
+                            ? {
+                                borderColor: hexA(p.base, 0.7),
+                                background: `linear-gradient(180deg, ${hexA(p.base, 0.85)}, ${hexA(p.dark, 0.9)})`,
+                                color: "#fff",
+                                boxShadow: `0 0 22px -6px ${hexA(p.base, 1)}`,
+                              }
+                            : {
+                                borderColor: "rgba(255,255,255,.1)",
+                                background: reached ? hexA(v.base, 0.22) : "rgba(10,7,21,.75)",
+                                color: reached ? "#fff" : "var(--text-lo)",
+                              }
                         }
                       >
-                        Lvl {level}
+                        {current && <CaptureMark size={13} tone={{ ...p, base: "#fff", light: "#fff" }} strokeWidth={2.4} />}
+                        Lv {level}
                       </div>
+
                       {(["free", "premium"] as const).map((track) => {
                         const r = row[track];
                         if (!r) return <div key={track} className="flex-1" />;
@@ -222,21 +263,33 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
             </div>
           </div>
 
-          {/* track footer */}
+          {/* footer */}
           <div className="flex shrink-0 items-center gap-2">
-            <GhostButton onClick={() => scrollTrack(-1)} className="px-3">◀</GhostButton>
-            <GhostButton onClick={() => scrollTrack(1)} className="px-3">▶</GhostButton>
-            <div className="flex-1 text-[12px] font-semibold text-[var(--text-mid)]">
+            <IconButton title="Scroll back" theme="gray" size={40} onClick={() => scrollTrack(-1)}>
+              <ChevronIcon dir="left" className="size-4" />
+            </IconButton>
+            <IconButton title="Scroll forward" theme="gray" size={40} onClick={() => scrollTrack(1)}>
+              <ChevronIcon className="size-4" />
+            </IconButton>
+            <div className="flex-1 pl-1 text-[12.5px] font-semibold text-[var(--text-mid)]">
               {claimable.length > 0
                 ? `${claimable.length} reward${claimable.length > 1 ? "s" : ""} ready to claim`
                 : "No rewards ready — earn EXP from quests and battles."}
             </div>
-            <BuyButton
-              label={`Claim All${claimable.length ? ` (${claimable.length})` : ""}`}
-              onClick={claimAll}
-              disabled={claimable.length === 0}
-              className="min-w-[170px]"
-            />
+            {claimable.length === 0 ? (
+              <GhostButton disabled className="min-w-[168px]">
+                Claim All
+              </GhostButton>
+            ) : (
+              <BuyButton
+                label={`Claim All (${claimable.length})`}
+                onClick={claimAll}
+                theme="green"
+                height={44}
+                fontSize={15}
+                className="min-w-[168px]"
+              />
+            )}
           </div>
         </div>
       </div>

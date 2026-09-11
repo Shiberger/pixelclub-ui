@@ -7,6 +7,10 @@ import { cn } from "@/lib/cn";
 /**
  * Vanilla Minecraft hotbar (quick slots) plus the crosshair — the two pieces of
  * game chrome that sit under every panel.
+ *
+ * These belong to the Minecraft client, not to PixelClub, so Design 2.0 leaves
+ * their shape alone and only quiets them: no pixel typeface, and the whole bar
+ * recedes while a server panel is open.
  */
 
 interface Slot {
@@ -40,7 +44,7 @@ function BlockIcon({ top, side }: { top: string; side: string }) {
   );
 }
 
-export function Hotbar() {
+export function Hotbar({ faded }: { faded: boolean }) {
   const [selected, setSelected] = useState(8);
 
   // number keys pick a slot, exactly like the game
@@ -54,7 +58,10 @@ export function Hotbar() {
   }, []);
 
   return (
-    <div className="pointer-events-auto absolute inset-x-0 bottom-[14px] z-20 flex justify-center">
+    <div
+      className="pointer-events-auto absolute inset-x-0 bottom-[14px] z-20 flex justify-center transition-opacity duration-300"
+      style={{ opacity: faded ? 0.3 : 0.94 }}
+    >
       <div className="relative flex border-[3px] border-[#131317] bg-[#2f2f36]/92 p-[3px]">
         {SLOTS.map((s, i) => (
           <button
@@ -73,7 +80,7 @@ export function Hotbar() {
             )}
             {s.block && <BlockIcon {...s.block} />}
             {!!s.count && s.count > 1 && (
-              <span className="font-pixel absolute right-[3px] bottom-[1px] text-[14px] leading-none text-white [text-shadow:2px_2px_0_#1b1b22]">
+              <span className="num absolute right-[3px] bottom-[1px] text-[12px] leading-none font-bold text-white [text-shadow:0_1px_2px_rgba(0,0,0,.9)]">
                 {s.count}
               </span>
             )}
