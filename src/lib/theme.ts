@@ -31,6 +31,26 @@ export function cardSkin(t: { base: string; light: string; dark: string; glow: s
   } as const;
 }
 
+/**
+ * Calmer card background for smaller, densely-packed cards (ranks, item
+ * packs) — a faint top wash instead of a full saturated gradient, so a grid
+ * of differently-themed cards reads as one coherent panel instead of a
+ * clashing rainbow.
+ */
+export function cardSkinFlat(t: { base: string; light: string; dark: string; glow: string }, opacity = 1) {
+  return {
+    background: `linear-gradient(165deg, ${hexA(t.base, 0.16 * opacity)} 0%, ${hexA(t.dark, 0.4 * opacity)} 55%, rgba(9,9,14,.97) 100%)`,
+    borderColor: hexA(t.base, 0.55),
+    boxShadow: `inset 0 1px 0 ${hexA(t.light, 0.22)}, inset 0 -2px 0 rgba(0,0,0,.5), 0 4px 14px rgba(0,0,0,.55)`,
+  } as const;
+}
+
+/** Faint tiled diamond motif used as a decorative watermark behind card content. */
+export function itemPattern(hex: string) {
+  const c = hex.replace("#", "%23");
+  return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='${c}' stroke-width='1.6'%3E%3Cpath d='M16 4l11 11-11 11L5 15z'/%3E%3Cpath d='M49 34l11 11-11 11-11-11z'/%3E%3C/g%3E%3C/svg%3E")`;
+}
+
 export function hexA(hex: string, a: number) {
   const h = hex.replace("#", "");
   const n = parseInt(h.length === 3 ? h.split("").map((c) => c + c).join("") : h, 16);

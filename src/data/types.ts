@@ -60,6 +60,8 @@ export interface RankPerk {
 
 export interface Rank {
   id: string;
+  /** section this rank is listed under on the Ranks tab, e.g. "Ranks" or "Pixel Prime" */
+  group: string;
   name: string;
   blurb: string;
   perks: string[];

@@ -27,6 +27,7 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
   const [tab, setTab] = useState<StoreTab>("bundles");
 
   const bundleGroups = useMemo(() => groupBy(BUNDLES, (b) => b.group), []);
+  const rankGroups = useMemo(() => groupBy(RANKS, (r) => r.group), []);
   const packGroups = useMemo(() => groupBy(PACKS, (p) => p.group), []);
 
   return (
@@ -34,6 +35,8 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
       title="Store"
       theme="magenta"
       onClose={onClose}
+      width="min(1320px, 96vw)"
+      height="min(760px, 92vh)"
       headerSlot={<TabBar tabs={TABS} value={tab} onChange={setTab} theme="magenta" />}
     >
       <div key={tab} className="scroll-y anim-rise min-h-0 flex-1 px-3.5 pt-2 pb-4">
@@ -54,11 +57,16 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
         {tab === "ranks" && (
           <>
             <SectionHeader label="Ranks" theme="gold" />
-            <div className="grid grid-cols-2 items-stretch gap-3">
-              {RANKS.map((r) => (
-                <RankCard key={r.id} rank={r} onBuy={(x) => onPurchase(x.name)} />
-              ))}
-            </div>
+            {Object.entries(rankGroups).map(([group, rows]) => (
+              <section key={group} className="mb-4">
+                <GroupBar label={group} />
+                <div className="grid grid-cols-2 items-stretch gap-4">
+                  {rows.map((r) => (
+                    <RankCard key={r.id} rank={r} onBuy={(x) => onPurchase(x.name)} />
+                  ))}
+                </div>
+              </section>
+            ))}
           </>
         )}
 
@@ -68,7 +76,7 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
             {Object.entries(packGroups).map(([group, rows]) => (
               <section key={group} className="mb-4">
                 <GroupBar label={group} />
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-4">
                   {rows.map((p) => (
                     <PackCard key={p.id} pack={p} onBuy={(x) => onPurchase(x.name)} />
                   ))}

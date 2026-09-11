@@ -103,6 +103,7 @@ export const BUNDLES: Bundle[] = [
 export const RANKS: Rank[] = [
   {
     id: "rank-6",
+    group: "Ranks",
     name: "Stellar",
     blurb: "The highest PixelClub rank tier — maximum store perks & prestige.",
     perks: ["Exclusive [Stellar] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
@@ -112,6 +113,7 @@ export const RANKS: Rank[] = [
   },
   {
     id: "rank-5",
+    group: "Ranks",
     name: "Astral",
     blurb: "Premium rank perks for the dedicated trainer.",
     perks: ["Exclusive [Astral] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
@@ -121,6 +123,7 @@ export const RANKS: Rank[] = [
   },
   {
     id: "rank-4",
+    group: "Ranks",
     name: "Cosmic",
     blurb: "Solid mid-tier perks for regular players.",
     perks: ["Exclusive [Cosmic] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
@@ -130,6 +133,7 @@ export const RANKS: Rank[] = [
   },
   {
     id: "rank-3",
+    group: "Ranks",
     name: "Eclipse",
     blurb: "Step up from Nova with extra in-game benefits.",
     perks: ["Exclusive [Eclipse] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
@@ -138,16 +142,8 @@ export const RANKS: Rank[] = [
     icon: "🌑",
   },
   {
-    id: "rank-27",
-    name: "PIXEL PRIME - 30 DAY MEMBERSHIP",
-    blurb: "30 days of PIXEL PRIME membership perks.",
-    perks: ["Exclusive [PIXEL] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
-    price: { kind: "point", amount: 300 },
-    theme: "cyan",
-    icon: "💎",
-  },
-  {
     id: "rank-2",
+    group: "Ranks",
     name: "Nova",
     blurb: "An accessible first rank with handy perks.",
     perks: ["Exclusive [Nova] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
@@ -156,22 +152,34 @@ export const RANKS: Rank[] = [
     icon: "💥",
   },
   {
-    id: "rank-26",
-    name: "PIXEL PRIME - 14 DAY MEMBERSHIP",
-    blurb: "14 days of PIXEL PRIME membership perks.",
-    perks: ["Exclusive [PIXEL] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
-    price: { kind: "point", amount: 180 },
-    theme: "gold",
-    icon: "💎",
-  },
-  {
     id: "rank-1",
+    group: "Ranks",
     name: "Spark",
     blurb: "The entry-level PixelClub rank.",
     perks: ["Exclusive [Spark] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
     price: { kind: "point", amount: 150 },
     theme: "green",
     icon: "⚡",
+  },
+  {
+    id: "rank-27",
+    group: "Pixel Prime",
+    name: "30 Day Membership",
+    blurb: "30 days of PIXEL PRIME membership perks.",
+    perks: ["Exclusive [PIXEL] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
+    price: { kind: "point", amount: 300 },
+    theme: "cyan",
+    icon: "💎",
+  },
+  {
+    id: "rank-26",
+    group: "Pixel Prime",
+    name: "14 Day Membership",
+    blurb: "14 days of PIXEL PRIME membership perks.",
+    perks: ["Exclusive [PIXEL] chat tag", "In-game store & gameplay perks", "See /shop in-game for the full perk list"],
+    price: { kind: "point", amount: 180 },
+    theme: "gold",
+    icon: "💎",
   },
 ];
 

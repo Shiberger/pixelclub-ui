@@ -1,21 +1,15 @@
 "use client";
 
 import type { Bundle } from "@/data/types";
-import { THEME, cardSkin, hexA } from "@/lib/theme";
+import { THEME, cardSkin, hexA, itemPattern } from "@/lib/theme";
 import { ItemChip } from "@/components/ui/ItemChip";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
-
-/** Faint tiled diamond motif behind the contents strip — echoes the loot inside. */
-function itemPattern(hex: string) {
-  const c = hex.replace("#", "%23");
-  return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='${c}' stroke-width='1.6'%3E%3Cpath d='M16 4l11 11-11 11L5 15z'/%3E%3Cpath d='M49 34l11 11-11 11-11-11z'/%3E%3C/g%3E%3C/svg%3E")`;
-}
 
 export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundle) => void }) {
   const t = THEME[bundle.theme];
 
   return (
-    <div className="relative mb-4 overflow-hidden rounded-[12px] border-2" style={cardSkin(t)}>
+    <div className="card-hover relative mb-4 overflow-hidden rounded-[12px] border-2" style={cardSkin(t)}>
       {/* tiled item-motif backdrop, tinted to the bundle theme */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[.14]"
