@@ -1,4 +1,4 @@
-import { item, pkmn } from "@/lib/assets";
+import { item, legendaryGif, pkmn } from "@/lib/assets";
 import type { BattlepassReward, BattlepassSeason, ItemStack, Rarity } from "./types";
 
 type Seed = [name: string, qty: number, rarity: Rarity, sprite: string];
@@ -16,6 +16,8 @@ const FREE_SEED: Seed[] = [
   ["EXP Share", 1, "rare", item("exp-share")],
 ];
 
+const SEASON_HERO_NAME = "Miraidon";
+
 const PREMIUM_SEED: Seed[] = [
   ["Ultra Ball", 50, "rare", item("ultra-ball")],
   ["Club Gem", 750, "rare", item("comet-shard")],
@@ -29,15 +31,22 @@ const PREMIUM_SEED: Seed[] = [
   ["Master Ball", 1, "mythic", item("master-ball")],
 ];
 
-/** Milestone levels hand off a Pokémon/cosmetic instead of a plain item. */
-const MILESTONES: Record<number, { track: "free" | "premium"; name: string; dex: number }[]> = {
+/**
+ * Milestone levels hand off a Pokémon/cosmetic instead of a plain item.
+ * Most reference a PokeAPI dex number; the final premium tier instead reuses
+ * the season's own hero GIF, so the last reward visually matches the
+ * Legendary shown on the Premium Pass card.
+ */
+type Milestone = { track: "free" | "premium"; name: string } & ({ dex: number } | { sprite: string });
+
+const MILESTONES: Record<number, Milestone[]> = {
   10: [{ track: "premium", name: "Vulpix (Alola)", dex: 37 }],
   20: [{ track: "free", name: "Eevee", dex: 133 }],
   25: [{ track: "premium", name: "Gengar Mount", dex: 94 }],
   40: [{ track: "premium", name: "Dragonite Mount", dex: 149 }],
   50: [
     { track: "free", name: "Lucario", dex: 448 },
-    { track: "premium", name: "Rayquaza Mount", dex: 384 },
+    { track: "premium", name: `${SEASON_HERO_NAME} Mount`, sprite: legendaryGif.miraidon },
   ],
 };
 
@@ -54,12 +63,13 @@ function buildRewards(): BattlepassReward[] {
       let stack: ItemStack;
 
       if (milestone) {
+        const sprite = "dex" in milestone ? pkmn.home(milestone.dex) : milestone.sprite;
         stack = {
-          id: `pkmn-${milestone.dex}`,
+          id: `milestone-${lvl}-${track}`,
           name: milestone.name,
           qty: 1,
           rarity: "mythic",
-          sprite: pkmn.home(milestone.dex),
+          sprite,
         };
       } else {
         const seed = track === "free" ? FREE_SEED : PREMIUM_SEED;
@@ -90,7 +100,7 @@ export const SEASON: BattlepassSeason = {
   endsIn: "18d 04h",
   premiumOwned: false,
   premiumPrice: { kind: "point", amount: 150 },
-  heroSprite: pkmn.officialArtwork(384),
-  heroName: "Rayquaza",
+  heroSprite: legendaryGif.miraidon,
+  heroName: SEASON_HERO_NAME,
   rewards: buildRewards(),
 };

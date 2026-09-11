@@ -39,7 +39,7 @@ export function PackCard({ pack, onBuy }: { pack: Pack; onBuy: (p: Pack) => void
 
         <div className="flex items-center gap-2 border-t-2 border-black/50 bg-black/55 px-2.5 py-2">
           <IconButton title="Gift to a friend" theme="violet" size={36}><span className="text-[15px]">🎁</span></IconButton>
-          <BuyButton price={pack.price} onClick={() => onBuy(pack)} className="h-[36px] min-w-0 flex-1 text-[15px]" />
+          <BuyButton price={pack.price} onClick={() => onBuy(pack)} height={36} fontSize={15} className="min-w-0 flex-1" />
         </div>
       </div>
     </div>

@@ -111,7 +111,7 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
       <div className="flex min-h-0 flex-1 gap-3 p-3">
         {/* ---- premium pass panel ---- */}
         <aside
-          className="relative flex w-[340px] shrink-0 flex-col overflow-hidden rounded-[12px] border-2"
+          className="relative flex w-[440px] shrink-0 flex-col overflow-hidden rounded-[12px] border-2"
           style={{
             borderColor: hexA(g.base, .9),
             background: `linear-gradient(170deg, ${hexA(g.base, .28)}, rgba(10,10,16,.96) 60%)`,
@@ -136,12 +136,16 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
               }}
             />
             <div className="anim-pulse-glow absolute inset-x-2 top-2 bottom-10 rounded-full blur-[58px]" style={{ background: hexA(g.light, .55) }} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={SEASON.heroSprite}
-              alt={SEASON.heroName}
-              className="anim-float absolute inset-0 m-auto size-[118%] object-contain drop-shadow-[0_20px_36px_rgba(0,0,0,.9)]"
-            />
+            <div className="absolute inset-3 flex items-center justify-center">
+              <div className="h-[82%] translate-x-[20%]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={SEASON.heroSprite}
+                  alt={SEASON.heroName}
+                  className="anim-float h-full w-auto max-w-none object-contain drop-shadow-[0_20px_36px_rgba(0,0,0,.9)]"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="relative z-10 px-3 pb-3">
@@ -156,7 +160,8 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
                 price={premium ? undefined : SEASON.premiumPrice}
                 disabled={premium}
                 theme={premium ? "green" : "cyan"}
-                className="h-[46px] min-w-0 flex-1 text-[16px]"
+                height={46}
+                className="min-w-0 flex-1"
                 onClick={() => { setPremium(true); onPurchase("Premium Pass"); }}
               />
               <IconButton title="Gift the Premium Pass" theme="violet" size={46}><span className="text-[18px]">🎁</span></IconButton>

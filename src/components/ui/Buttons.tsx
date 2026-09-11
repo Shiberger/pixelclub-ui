@@ -21,6 +21,8 @@ export function BuyButton({
   disabled,
   className,
   theme = "green",
+  height = 42,
+  fontSize = 16,
 }: {
   price?: Price;
   label?: string;
@@ -28,6 +30,9 @@ export function BuyButton({
   disabled?: boolean;
   className?: string;
   theme?: ThemeName;
+  /** Override the button's pixel height (and, by extension, its font/price size) — for scaling with an oversized card. */
+  height?: number;
+  fontSize?: number;
 }) {
   const t = THEME[theme];
   return (
@@ -35,19 +40,19 @@ export function BuyButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "pressable bevel-sm font-display txt-stroke-sm relative flex h-[42px] min-w-[132px] items-center justify-between gap-3 rounded-[9px] border-2 border-black/70 px-4 text-[16px] text-white disabled:pointer-events-none disabled:opacity-45 disabled:grayscale",
+        "pressable bevel-sm font-display txt-stroke-sm relative flex min-w-[132px] items-center justify-between gap-3 rounded-[9px] border-2 border-black/70 px-4 text-white disabled:pointer-events-none disabled:opacity-45 disabled:grayscale",
         className,
       )}
-      style={{ background: `linear-gradient(180deg, ${t.light}, ${t.base} 52%, ${t.dark})` }}
+      style={{ background: `linear-gradient(180deg, ${t.light}, ${t.base} 52%, ${t.dark})`, height, fontSize }}
     >
       <span>{label}</span>
       {price && (
         <span className="flex items-center gap-1 tabular-nums">
           {price.was && (
-            <s className="txt-stroke-xs mr-1 text-[12px] opacity-70">{formatPrice({ ...price, amount: price.was })}</s>
+            <s className="txt-stroke-xs mr-1 opacity-70" style={{ fontSize: fontSize * 0.75 }}>{formatPrice({ ...price, amount: price.was })}</s>
           )}
           {formatPrice(price)}
-          <span className="text-[13px]" style={{ WebkitTextStroke: "0" }}>{PRICE_ICON[price.kind]}</span>
+          <span style={{ WebkitTextStroke: "0", fontSize: fontSize * 0.8 }}>{PRICE_ICON[price.kind]}</span>
         </span>
       )}
     </button>

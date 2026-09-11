@@ -23,3 +23,24 @@ export const pkmn = {
 
 /** Pixel item icon, e.g. item("master-ball") */
 export const item = (name: string) => `${CDN}/items/${name}.png`;
+
+/**
+ * Animated 3D Cobblemon-model GIFs (by Paige Galloway), served from
+ * /public/legendary-pokemon-gif — used for hero/showcase art instead of the
+ * flat PokeAPI renders above.
+ */
+export const legendaryGif = {
+  giratina: "/legendary-pokemon-gif/paige-galloway-giratina-idle2.gif",
+  koraidon: "/legendary-pokemon-gif/paige-galloway-koraidon1.gif",
+  gimmighoul: "/legendary-pokemon-gif/paige-galloway-gimmighoul2.gif",
+  latios: "/legendary-pokemon-gif/paige-galloway-latios2.gif",
+  miraidon: "/legendary-pokemon-gif/paige-galloway-miraidon.gif",
+  landorus: "/legendary-pokemon-gif/paige-galloway-1landorus.gif",
+  thundurus: "/legendary-pokemon-gif/paige-galloway-1thundurus.gif",
+  raikou: "/legendary-pokemon-gif/paige-galloway-raikou.gif",
+  regice: "/legendary-pokemon-gif/paige-galloway-regice.gif",
+  regirock: "/legendary-pokemon-gif/paige-galloway-regirock.gif",
+  registeel: "/legendary-pokemon-gif/paige-galloway-registeel-v3.gif",
+  salamence: "/legendary-pokemon-gif/paige-galloway-salamence2.gif",
+  volcanion: "/legendary-pokemon-gif/paige-galloway-volcanion.gif",
+} as const;

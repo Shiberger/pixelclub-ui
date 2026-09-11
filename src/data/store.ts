@@ -4,7 +4,7 @@
  * Descriptions were blank on the live API, so blurbs below are inferred from
  * product names; everything else (names, prices, discounts, images) is real.
  */
-import { pkmn } from "@/lib/assets";
+import { legendaryGif } from "@/lib/assets";
 import type { Bundle, Currency, Pack, Rank } from "./types";
 
 export const CURRENCIES: Currency[] = [{ id: "point", name: "Point", icon: "🪙", color: "#fbbf24" }];
@@ -45,7 +45,7 @@ export const BUNDLES: Bundle[] = [
       { id: "bundle-20-key", name: "Adventure Key", qty: 2, rarity: "uncommon", sprite: ASSET.adventureKey },
     ],
     price: { kind: "point", amount: 150 },
-    showcase: { src: pkmn.home(384), kind: "pokemon" }, badge: "HOT",
+    showcase: { src: legendaryGif.giratina, kind: "pokemon" }, badge: "HOT",
   },
   {
     id: "bundle-11",
@@ -61,7 +61,7 @@ export const BUNDLES: Bundle[] = [
       { id: "bundle-11-catch", name: "x2 Catch Booster", qty: 1, rarity: "rare", sprite: ASSET.catchBooster },
     ],
     price: { kind: "point", amount: 140 },
-    showcase: { src: pkmn.home(6), kind: "pokemon" },
+    showcase: { src: legendaryGif.koraidon, kind: "pokemon" },
   },
   {
     id: "bundle-10",
@@ -76,7 +76,7 @@ export const BUNDLES: Bundle[] = [
       { id: "bundle-10-common", name: "Common key", qty: 1, rarity: "common", sprite: ASSET.commonKey },
     ],
     price: { kind: "point", amount: 75 },
-    showcase: { src: pkmn.home(25), kind: "pokemon" }, badge: "FIRST TIME ONLY",
+    showcase: { src: legendaryGif.gimmighoul, kind: "pokemon" }, badge: "FIRST TIME ONLY",
   },
   {
     id: "bundle-29",
@@ -89,7 +89,7 @@ export const BUNDLES: Bundle[] = [
       { id: "bundle-29-point", name: "Point", qty: 50, rarity: "rare", emoji: "🪙" },
     ],
     price: { kind: "point", amount: 10 },
-    showcase: { src: pkmn.home(133), kind: "pokemon" },
+    showcase: { src: legendaryGif.latios, kind: "pokemon" },
   },
 ];
 
