@@ -1,9 +1,19 @@
 "use client";
 
 import type { Rank } from "@/data/types";
-import { THEME, cardSkinFlat, hexA, itemPattern } from "@/lib/theme";
+import { THEME, type ThemeName, cardSkinFlat, hexA, itemPattern } from "@/lib/theme";
 import { BuyButton, IconButton } from "@/components/ui/Buttons";
 import { CardBadge } from "@/components/ui/CardBadge";
+
+/**
+ * One accent per section instead of per rank — a shelf of individually
+ * multicolored rank tiers reads as noise; a single gold thread for "Ranks"
+ * and a single cyan thread for "Pixel Prime" reads as two clear tiers.
+ */
+const GROUP_THEME: Record<string, ThemeName> = {
+  Ranks: "gold",
+  "Pixel Prime": "cyan",
+};
 
 /**
  * "Gamepass" row tile, 2-up per shelf: a bare, oversized icon on the left
@@ -14,7 +24,7 @@ import { CardBadge } from "@/components/ui/CardBadge";
  * without spilling past the panel edges.
  */
 export function RankCard({ rank, onBuy }: { rank: Rank; onBuy: (r: Rank) => void }) {
-  const t = THEME[rank.theme];
+  const t = THEME[GROUP_THEME[rank.group] ?? rank.theme];
 
   return (
     <div className="relative flex flex-col pt-5">
