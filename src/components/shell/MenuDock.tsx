@@ -7,6 +7,7 @@ import { THEME, type ThemeName, hexA } from "@/lib/theme";
 import { CaptureMark } from "@/components/ui/Motif";
 import { DexIcon, PassIcon, PlusIcon, PointToken, QuestIcon, StoreIcon, WikiIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
+import { useIsCompactHud } from "@/lib/viewport";
 import type { PanelId } from "./GameShell";
 
 /* ============================================================================
@@ -150,7 +151,17 @@ function MenuCard({ entry, active, onClick }: { entry: Entry; active: boolean; o
   );
 }
 
-function MenuIcon({ entry, active, onClick }: { entry: Entry; active: boolean; onClick: () => void }) {
+function MenuIcon({
+  entry,
+  active,
+  compact,
+  onClick,
+}: {
+  entry: Entry;
+  active: boolean;
+  compact: boolean;
+  onClick: () => void;
+}) {
   const t = THEME[entry.theme];
   const { Icon } = entry;
 
@@ -160,7 +171,8 @@ function MenuIcon({ entry, active, onClick }: { entry: Entry; active: boolean; o
       title={`${entry.label} · ${entry.hotkey}`}
       aria-label={entry.label}
       className={cn(
-        "press ring-focus group relative grid size-[52px] place-items-center overflow-hidden rounded-[18px] border",
+        "press ring-focus group relative grid place-items-center overflow-hidden rounded-[18px] border",
+        compact ? "size-[38px] rounded-[14px]" : "size-[52px]",
         active ? "border-transparent" : "glass-hud",
       )}
       style={active ? activeSkin(t) : undefined}
@@ -170,16 +182,28 @@ function MenuIcon({ entry, active, onClick }: { entry: Entry; active: boolean; o
         style={{ background: `radial-gradient(100% 100% at 50% 100%, ${hexA(t.base, active ? 0.5 : 0.22)}, transparent 70%)` }}
         aria-hidden
       />
-      <Icon className={cn("relative size-5", active ? "text-white" : "text-[var(--text-mid)]")} />
+      <Icon className={cn("relative", compact ? "size-4" : "size-5", active ? "text-white" : "text-[var(--text-mid)]")} />
     </button>
   );
 }
 
-function Wallet({ collapsed }: { collapsed: boolean }) {
+function Wallet({ collapsed, compact }: { collapsed: boolean; compact: boolean }) {
   const total = CURRENCIES.reduce((n, c) => n + (WALLET[c.id] ?? 0), 0);
 
   if (collapsed) {
-    return (
+    /*
+     * Compact keeps this a pill (icon + total stay legible) instead of
+     * shrinking it to the icon column's own square width — the point count
+     * is the one thing on this HUD a player actually needs mid-game, and
+     * this corner has spare width to its left even in a short landscape
+     * viewport.
+     */
+    return compact ? (
+      <div className="glass flex w-max items-center gap-1 self-end rounded-full py-1.5 pr-2.5 pl-2">
+        <PointToken size={14} />
+        <span className="num text-[11px] leading-none font-bold text-white">{total.toLocaleString("en-US")}</span>
+      </div>
+    ) : (
       <div className="glass flex w-[52px] flex-col items-center gap-1 rounded-[18px] py-2">
         <PointToken size={18} />
         <span className="num text-[10px] leading-none font-bold text-white">{total.toLocaleString("en-US")}</span>
@@ -214,24 +238,39 @@ function Wallet({ collapsed }: { collapsed: boolean }) {
 }
 
 export function MenuDock({ open, onOpen }: { open: PanelId; onOpen: (p: PanelId) => void }) {
-  const collapsed = open !== null;
+  const isCompact = useIsCompactHud();
+  const collapsed = open !== null || isCompact;
 
   return (
     <div
       className={cn(
-        "pointer-events-auto absolute top-5 right-4 z-20 flex flex-col items-end gap-3",
-        collapsed ? "w-[52px]" : "w-[264px]",
+        "pointer-events-auto absolute z-20 flex flex-col items-end gap-3",
+        collapsed ? (isCompact ? "w-[38px] gap-2" : "w-[52px]") : "w-[264px]",
       )}
+      style={{
+        top: "calc(1.25rem + var(--safe-t))",
+        right: "calc(1rem + var(--safe-r))",
+        maxHeight: "calc(100dvh - 5rem - var(--safe-t) - var(--safe-b))",
+      }}
     >
-      <Wallet collapsed={collapsed} />
-      <div className="flex w-full flex-col items-end gap-2.5">
+      <Wallet collapsed={collapsed} compact={isCompact} />
+      {/*
+        Landscape phones are the tight case — six items rarely all fit a
+        320–430px-tall screen at any reasonable size, so this scrolls rather
+        than silently running the last card(s) under the hotbar.
+      */}
+      <div className={cn("scroll-y no-scrollbar flex w-full min-h-0 flex-1 flex-col items-end", isCompact ? "gap-1.5" : "gap-2.5")}>
         {ENTRIES.map((e) => {
           const props = {
             entry: e,
             active: open === e.id,
             onClick: () => onOpen(open === e.id ? null : e.id),
           };
-          return collapsed ? <MenuIcon key={e.id} {...props} /> : <MenuCard key={e.id} {...props} />;
+          return collapsed ? (
+            <MenuIcon key={e.id} {...props} compact={isCompact} />
+          ) : (
+            <MenuCard key={e.id} {...props} />
+          );
         })}
       </div>
     </div>

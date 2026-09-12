@@ -40,7 +40,13 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
       height="min(760px, 100%)"
       headerSlot={<TabBar tabs={TABS} value={tab} onChange={setTab} theme="violet" />}
     >
-      <div key={tab} className="scroll-y anim-rise min-h-0 flex-1 px-6 pt-5 pb-7">
+      {/*
+        Grid columns below key off the Panel's own @container width, not the
+        viewport — the Panel is already capped well under the viewport on
+        desktop (min(1280px, 94vw)), so a viewport breakpoint would fire too
+        early there and too late on a narrow phone Panel.
+      */}
+      <div key={tab} className="scroll-y anim-rise min-h-0 flex-1 px-4 pt-4 pb-6 @sm:px-6 @sm:pt-5 @sm:pb-7">
         {tab === "bundles" && (
           <>
             <SectionHeader label="Featured bundles" theme="magenta" caption="Limited stock, best value per Point" />
@@ -60,7 +66,7 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
             {Object.entries(rankGroups).map(([group, rows]) => (
               <section key={group} className="mb-6">
                 <GroupBar label={group} count={rows.length} />
-                <div className="grid grid-cols-2 items-stretch gap-4">
+                <div className="grid grid-cols-1 items-stretch gap-3 @lg:grid-cols-2 @sm:gap-4">
                   {/* rows arrive highest tier first, so the tier number counts down */}
                   {rows.map((r, i) => (
                     <RankCard key={r.id} rank={r} tier={rows.length - i} onBuy={(x) => onPurchase(x.name)} />
@@ -77,7 +83,13 @@ export function StorePanel({ onClose, onPurchase }: { onClose: () => void; onPur
             {Object.entries(packGroups).map(([group, rows]) => (
               <section key={group} className="mb-6">
                 <GroupBar label={group} count={rows.length} />
-                <div className="grid grid-cols-4 gap-4">
+                {/*
+                  PackCard's footer (gift icon + price button) needs ~210px to
+                  avoid the price/coin icon clipping past the card edge — so
+                  each step here waits for a container width that keeps every
+                  column at or above that, rather than matching the Ranks grid.
+                */}
+                <div className="grid grid-cols-1 gap-3 @lg:grid-cols-2 @sm:gap-4 @3xl:grid-cols-3 @6xl:grid-cols-4">
                   {rows.map((p) => (
                     <PackCard key={p.id} pack={p} onBuy={(x) => onPurchase(x.name)} />
                   ))}

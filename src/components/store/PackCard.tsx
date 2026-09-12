@@ -57,11 +57,18 @@ export function PackCard({ pack, onBuy }: { pack: Pack; onBuy: (p: Pack) => void
           <p className="mt-1 line-clamp-2 h-[34px] text-[12px] leading-snug text-[var(--text-lo)]">{pack.blurb}</p>
         </div>
 
-        <div className="relative mt-2 flex items-center gap-2.5 border-t border-white/8 bg-black/20 px-4 py-3">
+        <div className="relative mt-2 flex flex-wrap items-center gap-2.5 border-t border-white/8 bg-black/20 px-4 py-3">
           <IconButton title="Gift to a friend" theme="violet" size={38}>
             <GiftIcon className="size-4" />
           </IconButton>
-          <BuyButton price={pack.price} onClick={() => onBuy(pack)} height={42} fontSize={14} theme={theme} className="min-w-0 flex-1" />
+          <BuyButton
+            price={pack.price}
+            onClick={() => onBuy(pack)}
+            height={42}
+            fontSize={14}
+            theme={theme}
+            className="min-w-[120px] flex-1"
+          />
         </div>
       </div>
     </div>

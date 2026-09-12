@@ -59,8 +59,8 @@ export function Hotbar({ faded }: { faded: boolean }) {
 
   return (
     <div
-      className="pointer-events-auto absolute inset-x-0 bottom-[14px] z-20 flex justify-center transition-opacity duration-300"
-      style={{ opacity: faded ? 0.3 : 0.94 }}
+      className="pointer-events-auto absolute inset-x-0 z-20 flex justify-center transition-opacity duration-300"
+      style={{ opacity: faded ? 0.3 : 0.94, bottom: "calc(14px + var(--safe-b))" }}
     >
       <div className="relative flex border-[3px] border-[#131317] bg-[#2f2f36]/92 p-[3px]">
         {SLOTS.map((s, i) => (
@@ -68,7 +68,7 @@ export function Hotbar({ faded }: { faded: boolean }) {
             key={i}
             onClick={() => setSelected(i)}
             className={cn(
-              "relative grid size-[46px] place-items-center border-2 border-[#22222a] bg-[#4a4a54]",
+              "relative grid size-(--hotbar-slot) place-items-center border-2 border-[#22222a] bg-[#4a4a54]",
               i > 0 && "-ml-[2px]",
             )}
             style={{ boxShadow: "inset 1px 1px 0 rgba(255,255,255,.12), inset -1px -1px 0 rgba(0,0,0,.35)" }}
@@ -76,11 +76,11 @@ export function Hotbar({ faded }: { faded: boolean }) {
           >
             {s.sprite && (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={s.sprite} alt="" className="pixelated size-[32px] object-contain" />
+              <img src={s.sprite} alt="" className="pixelated size-[70%] object-contain" />
             )}
             {s.block && <BlockIcon {...s.block} />}
             {!!s.count && s.count > 1 && (
-              <span className="num absolute right-[3px] bottom-[1px] text-[12px] leading-none font-bold text-white [text-shadow:0_1px_2px_rgba(0,0,0,.9)]">
+              <span className="num absolute right-[3px] bottom-[1px] text-[11px] leading-none font-bold text-white [text-shadow:0_1px_2px_rgba(0,0,0,.9)] sm:text-[12px]">
                 {s.count}
               </span>
             )}
@@ -89,8 +89,13 @@ export function Hotbar({ faded }: { faded: boolean }) {
 
         {/* selection cursor — 2px larger than a slot, overlapping its neighbours */}
         <span
-          className="pointer-events-none absolute top-[-1px] h-[52px] w-[52px] border-[3px] border-[#e6e6ea] transition-[left] duration-100"
-          style={{ left: `${-1 + selected * 44}px`, boxShadow: "inset 0 0 0 2px rgba(0,0,0,.45)" }}
+          className="pointer-events-none absolute top-[-1px] border-[3px] border-[#e6e6ea] transition-[left] duration-100"
+          style={{
+            left: `calc(-1px + ${selected} * var(--hotbar-pitch))`,
+            width: "calc(var(--hotbar-slot) + 6px)",
+            height: "calc(var(--hotbar-slot) + 6px)",
+            boxShadow: "inset 0 0 0 2px rgba(0,0,0,.45)",
+          }}
           aria-hidden
         />
       </div>

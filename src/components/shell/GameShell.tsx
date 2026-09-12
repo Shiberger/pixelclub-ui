@@ -52,7 +52,10 @@ export function GameShell() {
         <MenuDock open={panel} onOpen={setPanel} />
         <Hotbar faded={open} />
 
-        <div className="glass absolute bottom-5 left-5 flex items-center gap-2.5 rounded-full px-3.5 py-2">
+        <div
+          className="glass absolute hidden items-center gap-2.5 rounded-full px-3.5 py-2 sm:flex"
+          style={{ bottom: "calc(1.25rem + var(--safe-b))", left: "calc(1.25rem + var(--safe-l))" }}
+        >
           <span className="size-2 rounded-full bg-[var(--mint-500)] shadow-[0_0_8px_var(--mint-500)]" />
           <span className="text-[12px] leading-none font-bold text-white">pixelclub.asia</span>
           <span className="num text-[11px] leading-none text-[var(--text-lo)]">842 online</span>

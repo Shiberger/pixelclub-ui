@@ -9,6 +9,7 @@ import { RewardCell } from "./RewardCell";
 import { SEASON } from "@/data/battlepass";
 import type { BattlepassReward } from "@/data/types";
 import { THEME, hexA, surface } from "@/lib/theme";
+import { useIsCompactHud } from "@/lib/viewport";
 
 const LEVEL_BOOSTS = [1, 10, 50] as const;
 const COL_W = 182;
@@ -18,6 +19,7 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
   const [premium, setPremium] = useState(SEASON.premiumOwned);
   const [claimed, setClaimed] = useState<Set<string>>(new Set());
   const trackRef = useRef<HTMLDivElement>(null);
+  const isCompact = useIsCompactHud();
 
   // Centre the track on the current level when the panel opens.
   useEffect(() => {
@@ -76,10 +78,10 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
       width="min(1280px, 94vw)"
       height="min(760px, 100%)"
       headerSlot={
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-5">
+        <div className="flex w-full min-w-0 flex-col gap-3 @md:w-auto @md:flex-1 @md:flex-row @md:items-center @md:justify-end @md:gap-5">
           {/* season progress */}
-          <div className="min-w-0 max-w-[340px] flex-1">
-            <div className="mb-1.5 flex items-baseline gap-2">
+          <div className="min-w-0 @md:max-w-[340px] @md:flex-1">
+            <div className="mb-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
               <span className="font-display-bold text-[17px] leading-none text-white">Level {SEASON.level}</span>
               <span className="text-[12px] leading-none text-[var(--text-lo)]">of {SEASON.maxLevel}</span>
               <span className="num ml-auto text-[11px] leading-none font-semibold text-[var(--text-mid)]">
@@ -98,36 +100,46 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
             </div>
           </div>
 
-          {/* instant levels */}
-          <div className="flex shrink-0 items-center gap-1.5">
-            {LEVEL_BOOSTS.map((n) => (
-              <button
-                key={n}
-                onClick={() => onPurchase(`+${n} Battlepass Level`)}
-                className="press ring-focus glass-tile flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-[var(--text-mid)] hover:text-white"
-              >
-                <SparkIcon className="size-3.5" />+{n}
-              </button>
-            ))}
-          </div>
+          {/*
+            instant levels — dropped in compact mode (short landscape phones
+            most of all): keeping them forces the header onto 2–3 lines,
+            which alone can eat well over half a ~350px-tall panel. The
+            progress bar above and the reward track below stay usable; this
+            upsell row can wait for a screen with height to spare.
+          */}
+          {!isCompact && (
+            <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+              {LEVEL_BOOSTS.map((n) => (
+                <button
+                  key={n}
+                  onClick={() => onPurchase(`+${n} Battlepass Level`)}
+                  className="press ring-focus glass-tile flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-[var(--text-mid)] hover:text-white"
+                >
+                  <SparkIcon className="size-3.5" />+{n}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       }
     >
-      <div className="flex min-h-0 flex-1 gap-4 p-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 p-3 @md:flex-row @md:gap-4 @md:p-5">
         {/* ---- premium pass ---- */}
         <aside
-          className="relative flex w-[330px] shrink-0 flex-col overflow-hidden rounded-[24px] border"
+          className="relative flex h-[220px] shrink-0 flex-col overflow-hidden rounded-[24px] border @md:h-auto @md:w-[330px] @md:shrink @md:min-h-0"
           style={surface(p)}
         >
           <Beams tone={p} intensity={0.9} />
           <Motes count={8} />
 
-          <div className="relative z-10 px-5 pt-5">
+          <div className="relative z-10 px-4 pt-4 @md:px-5 @md:pt-5">
             <div className="flex items-center gap-2">
               <PrismMark size={15} tone={p} />
               <span className="kicker leading-none">{premium ? "Unlocked" : "Premium track"}</span>
             </div>
-            <h3 className="font-display-bold mt-2 text-[27px] leading-none text-white">Premium Pass</h3>
+            <h3 className="font-display-bold mt-2 text-[21px] leading-none text-white @md:text-[27px]">
+              Premium Pass
+            </h3>
           </div>
 
           {/* hero stage */}
@@ -149,8 +161,8 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
             </div>
           </div>
 
-          <div className="relative z-10 px-5 pb-5">
-            <p className="mb-3 text-[12.5px] leading-snug text-[var(--text-mid)]">
+          <div className="relative z-10 px-4 pb-4 @md:px-5 @md:pb-5">
+            <p className="mb-3 hidden text-[12.5px] leading-snug text-[var(--text-mid)] @md:block">
               {premium
                 ? "Every premium tier is yours — claim them from the track whenever you level."
                 : "Unlock all 50 premium tiers, including the season Mount and the Master Ball at Lv 50."}
@@ -176,11 +188,18 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
           </div>
         </aside>
 
-        {/* ---- reward track ---- */}
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <div className="flex min-h-0 flex-1 gap-3">
+        {/*
+          ---- reward track ----
+          Its own @container: the fixed-width aside can leave this column as
+          narrow as ~200px on a landscape phone, well under the outer Panel's
+          own @md — so the labels column and footer button below must size
+          off *this* box, not the Panel's, or they'll size up as if there
+          were hundreds of extra pixels that aside already spent.
+        */}
+        <div className="@container flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+          <div className="flex min-h-0 flex-1 gap-2 @md:gap-3">
             {/* track labels */}
-            <div className="flex w-[84px] shrink-0 flex-col gap-3 pt-[42px]">
+            <div className="flex w-[52px] shrink-0 flex-col gap-2 pt-[42px] @md:w-[84px] @md:gap-3">
               <div className="glass-tile flex flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl">
                 <GiftIcon className="size-5 text-[var(--text-mid)]" />
                 <span className="kicker leading-none">Free</span>
@@ -265,19 +284,19 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
 
           {/* footer */}
           <div className="flex shrink-0 items-center gap-2">
-            <IconButton title="Scroll back" theme="gray" size={40} onClick={() => scrollTrack(-1)}>
+            <IconButton title="Scroll back" theme="gray" size={38} onClick={() => scrollTrack(-1)}>
               <ChevronIcon dir="left" className="size-4" />
             </IconButton>
-            <IconButton title="Scroll forward" theme="gray" size={40} onClick={() => scrollTrack(1)}>
+            <IconButton title="Scroll forward" theme="gray" size={38} onClick={() => scrollTrack(1)}>
               <ChevronIcon className="size-4" />
             </IconButton>
-            <div className="flex-1 pl-1 text-[12.5px] font-semibold text-[var(--text-mid)]">
+            <div className="min-w-0 flex-1 truncate pl-1 text-[12.5px] font-semibold text-[var(--text-mid)]">
               {claimable.length > 0
                 ? `${claimable.length} reward${claimable.length > 1 ? "s" : ""} ready to claim`
                 : "No rewards ready — earn EXP from quests and battles."}
             </div>
             {claimable.length === 0 ? (
-              <GhostButton disabled className="min-w-[168px]">
+              <GhostButton disabled className="min-w-[120px] @md:min-w-[168px]">
                 Claim All
               </GhostButton>
             ) : (
@@ -287,7 +306,7 @@ export function BattlepassPanel({ onClose, onPurchase }: { onClose: () => void; 
                 theme="green"
                 height={44}
                 fontSize={15}
-                className="min-w-[168px]"
+                className="min-w-[120px] @md:min-w-[168px]"
               />
             )}
           </div>

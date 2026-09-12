@@ -4,6 +4,7 @@ import { pkmn, item } from "@/lib/assets";
 import { THEME, hexA } from "@/lib/theme";
 import { CaptureRing } from "@/components/ui/Motif";
 import { cn } from "@/lib/cn";
+import { useIsCompactHud } from "@/lib/viewport";
 
 /**
  * The party HUD, rebuilt in the Design 2.0 language: six glass capsules where
@@ -114,14 +115,18 @@ function Slot({ mon, active }: { mon: PartyMon; active: boolean }) {
 }
 
 /** Collapsed form: just the six HP dials, so an open panel has room to breathe. */
-function SlotDial({ mon, active }: { mon: PartyMon; active: boolean }) {
+function SlotDial({ mon, active, compact }: { mon: PartyMon; active: boolean; compact: boolean }) {
   return (
     <div
-      className={cn("grid size-[52px] place-items-center rounded-[18px] border", !active && "glass-hud")}
+      className={cn(
+        "grid place-items-center border",
+        compact ? "size-8 rounded-xl" : "size-[52px] rounded-[18px]",
+        !active && "glass-hud",
+      )}
       style={active ? activeSkin : undefined}
       title={`${mon.name} · Lv ${mon.level} · ${Math.round(mon.hp * 100)}%`}
     >
-      <CaptureRing pct={mon.hp} size={40} tone={hpTone(mon.hp)} thickness={2.2}>
+      <CaptureRing pct={mon.hp} size={compact ? 25 : 40} tone={hpTone(mon.hp)} thickness={compact ? 1.6 : 2.2}>
         <Portrait mon={mon} />
       </CaptureRing>
     </div>
@@ -129,16 +134,33 @@ function SlotDial({ mon, active }: { mon: PartyMon; active: boolean }) {
 }
 
 export function PartyWidget({ collapsed }: { collapsed: boolean }) {
+  const isCompact = useIsCompactHud();
+  const dialsOnly = collapsed || isCompact;
+
   return (
-    <div className="pointer-events-auto absolute top-5 left-4 z-20 flex flex-col gap-2">
-      {!collapsed && <div className="kicker pl-1">Party</div>}
-      {PARTY.map((mon, i) =>
-        collapsed ? (
-          <SlotDial key={mon.dex} mon={mon} active={i === ACTIVE} />
-        ) : (
-          <Slot key={mon.dex} mon={mon} active={i === ACTIVE} />
-        ),
-      )}
+    <div
+      className={cn("pointer-events-auto absolute z-20 flex flex-col", isCompact ? "gap-1" : "gap-2")}
+      style={{
+        top: "calc(1.25rem + var(--safe-t))",
+        left: "calc(1rem + var(--safe-l))",
+        maxHeight: "calc(100dvh - 5rem - var(--safe-t) - var(--safe-b))",
+      }}
+    >
+      {!dialsOnly && <div className="kicker pl-1">Party</div>}
+      <div
+        className={cn(
+          "scroll-y no-scrollbar flex min-h-0 flex-1 flex-col",
+          isCompact ? "gap-1" : "gap-2",
+        )}
+      >
+        {PARTY.map((mon, i) =>
+          dialsOnly ? (
+            <SlotDial key={mon.dex} mon={mon} active={i === ACTIVE} compact={isCompact} />
+          ) : (
+            <Slot key={mon.dex} mon={mon} active={i === ACTIVE} />
+          ),
+        )}
+      </div>
     </div>
   );
 }

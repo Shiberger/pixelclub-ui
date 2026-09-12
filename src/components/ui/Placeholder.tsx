@@ -40,7 +40,7 @@ export function PlaceholderPanel({
     >
       <div className="flex min-h-0 flex-1 items-stretch">
         {/* scope */}
-        <div className="scroll-y anim-rise min-w-0 flex-1 px-8 py-7">
+        <div className="scroll-y anim-rise min-w-0 flex-1 px-5 py-6 @sm:px-8 @sm:py-7">
           <span
             className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold tracking-[0.12em] uppercase"
             style={{ borderColor: hexA(t.base, 0.4), background: hexA(t.base, 0.14), color: t.light }}
@@ -64,7 +64,7 @@ export function PlaceholderPanel({
         </div>
 
         {/* illustrated stage */}
-        <div className="relative hidden w-[42%] shrink-0 overflow-hidden md:block">
+        <div className="relative hidden w-[42%] shrink-0 overflow-hidden @lg:block">
           <Bloom tone={t} size={360} className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" opacity={0.4} />
           <Motes count={10} />
 

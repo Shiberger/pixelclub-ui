@@ -26,16 +26,77 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
           aria-hidden
         />
 
-        <div className="relative flex items-stretch">
+        <div className="relative flex flex-col @2xl:flex-row @2xl:items-stretch">
+          {/*
+            illustrated stage — leads on top on a stacked mobile card, and
+            kept leading (left of the text) at @2xl too, by choice, rather
+            than reverting to the original design's art-on-the-right.
+          */}
+          {bundle.showcase && (
+            <div className="relative order-first h-[180px] w-full shrink-0 overflow-hidden @2xl:h-auto @2xl:w-[38%] @2xl:min-w-[240px]">
+              <Beams tone={t} intensity={0.75} />
+              {/*
+                Dead-centre on the showcase box at every size. The ring used
+                `left-58%` (a % of the box) while the art used `translate-x
+                8%` (a % of its *own*, much smaller, width) — two different
+                references to "shift right" that landed at two different
+                spots, so the ring and the art it's supposed to frame never
+                actually lined up. Centering both the same way fixes that.
+              */}
+              <Bloom
+                tone={t}
+                size={260}
+                opacity={0.45}
+                className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+              <CaptureMark
+                size={300}
+                tone={t}
+                strokeWidth={0.32}
+                className="anim-spin-slow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-40"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={bundle.showcase.src}
+                  alt=""
+                  className="anim-float h-[86%] w-auto max-w-none object-contain drop-shadow-[0_22px_34px_rgba(0,0,0,.85)]"
+                  loading="lazy"
+                />
+              </div>
+              {/*
+                Vignette sits on whichever edge touches the text column, and
+                fades along whichever axis that edge runs — stacked mobile
+                has art on top fading *down* into the text below it; @2xl
+                has art leading on the left fading *right* into the text
+                beside it. Inline `style` can't switch gradient direction at
+                a breakpoint, so this is two boxes instead of one relying on
+                `@2xl:` classes to reshape a single fixed gradient.
+              */}
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-16 @2xl:hidden"
+                style={{ background: "linear-gradient(180deg, transparent, rgba(10,7,21,.55))" }}
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute inset-y-0 right-0 hidden w-24 @2xl:block"
+                style={{ background: "linear-gradient(90deg, transparent, rgba(10,7,21,.55))" }}
+                aria-hidden
+              />
+            </div>
+          )}
+
           {/* offer */}
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-3.5 px-6 py-6">
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-3 px-4 py-5 @sm:gap-3.5 @sm:px-6 @sm:py-6">
             <div>
               <div className="flex items-center gap-2">
                 <CaptureMark size={15} tone={t} filled strokeWidth={2.2} />
                 <span className="kicker leading-none">{bundle.group}</span>
                 {bundle.badge && <CardBadge color={t}>{bundle.badge}</CardBadge>}
               </div>
-              <h3 className="font-display-bold mt-2 text-[29px] leading-tight text-white">{bundle.name}</h3>
+              <h3 className="font-display-bold mt-2 text-[22px] leading-tight text-white @sm:text-[29px]">
+                {bundle.name}
+              </h3>
               <p className="mt-1.5 max-w-[440px] text-[14px] leading-snug text-[var(--text-mid)]">{bundle.tagline}</p>
             </div>
 
@@ -43,48 +104,18 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
               <div className="kicker mb-2 leading-none">Inside</div>
               <div className="flex flex-wrap gap-2">
                 {bundle.contents.map((c, i) => (
-                  <ItemChip key={`${c.id}-${i}`} stack={c} size={96} />
+                  <ItemChip key={`${c.id}-${i}`} stack={c} size={80} className="@sm:hidden" />
+                ))}
+                {bundle.contents.map((c, i) => (
+                  <ItemChip key={`${c.id}-${i}-lg`} stack={c} size={96} className="hidden @sm:block" />
                 ))}
               </div>
             </div>
           </div>
-
-          {/* illustrated stage */}
-          {bundle.showcase && (
-            <div className="relative w-[38%] min-w-[240px] shrink-0 overflow-hidden">
-              <Beams tone={t} intensity={0.75} />
-              <Bloom
-                tone={t}
-                size={260}
-                opacity={0.45}
-                className="top-1/2 left-[58%] -translate-x-1/2 -translate-y-1/2"
-              />
-              <CaptureMark
-                size={300}
-                tone={t}
-                strokeWidth={0.32}
-                className="anim-spin-slow absolute top-1/2 left-[58%] -translate-x-1/2 -translate-y-1/2 opacity-40"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={bundle.showcase.src}
-                  alt=""
-                  className="anim-float h-[86%] w-auto max-w-none translate-x-[8%] object-contain drop-shadow-[0_22px_34px_rgba(0,0,0,.85)]"
-                  loading="lazy"
-                />
-              </div>
-              <div
-                className="pointer-events-none absolute inset-y-0 left-0 w-24"
-                style={{ background: "linear-gradient(90deg, rgba(10,7,21,.55), transparent)" }}
-                aria-hidden
-              />
-            </div>
-          )}
         </div>
 
         {/* action bar */}
-        <div className="relative flex items-center gap-3 border-t border-white/8 bg-black/20 px-5 py-3.5">
+        <div className="relative flex flex-wrap items-center gap-3 border-t border-white/8 bg-black/20 px-4 py-3 @sm:px-5 @sm:py-3.5">
           <IconButton title="Preview contents" theme="gray" size={42} onClick={() => onBuy(bundle)}>
             <EyeIcon className="size-5" />
           </IconButton>
@@ -102,7 +133,15 @@ export function BundleCard({ bundle, onBuy }: { bundle: Bundle; onBuy: (b: Bundl
               {bundle.purchasesLeft} left
             </span>
           )}
-          <BuyButton price={bundle.price} onClick={() => onBuy(bundle)} height={48} fontSize={16} theme={bundle.theme} className="min-w-[176px]" />
+
+          <BuyButton
+            price={bundle.price}
+            onClick={() => onBuy(bundle)}
+            height={48}
+            fontSize={16}
+            theme={bundle.theme}
+            className="min-w-[176px]"
+          />
         </div>
       </div>
     </div>

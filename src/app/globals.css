@@ -56,6 +56,27 @@
   /* --- elevation --- */
   --edge: rgba(255, 255, 255, 0.09);
   --edge-hi: rgba(255, 255, 255, 0.16);
+
+  /* --- safe-area, so HUD edges clear a notch / home indicator --- */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+
+  /*
+   * Hotbar slot pitch as a variable, not a literal in Tailwind classes — the
+   * selection cursor's `left` offset is computed from it in Hotbar.tsx, so
+   * the breakpoint below and that JS math can never drift out of sync.
+   */
+  --hotbar-slot: 46px;
+  --hotbar-pitch: 44px;
+}
+
+@media (max-width: 479px) {
+  :root {
+    --hotbar-slot: 36px;
+    --hotbar-pitch: 34px;
+  }
 }
 
 * {
@@ -388,6 +409,45 @@ body {
 }
 .no-scrollbar {
   scrollbar-width: none;
+}
+
+/*
+ * Panel's own inset from the viewport edge — combines the safe-area env()
+ * vars with the breakpoint step, which a Tailwind utility class can't do on
+ * its own (an inline style would win over the class at every breakpoint and
+ * flatten the responsive step, since it has no media condition of its own).
+ */
+.panel-frame {
+  padding: calc(0.75rem + var(--safe-t)) calc(0.75rem + var(--safe-r)) calc(0.75rem + var(--safe-b))
+    calc(0.75rem + var(--safe-l));
+}
+/*
+ * The 640px step below is meant for a tablet-portrait-sized window, where
+ * there's plenty of *height* to spare for the hotbar clearance too. A phone
+ * turned landscape hits this same width (640–930px) but is only 320–430px
+ * tall — spending 6rem of that on bottom padding is how a panel used to end
+ * up squeezed into a sliver. So the extra bottom clearance only kicks in
+ * once height is generous as well; width alone still grows the side inset,
+ * since that one only trades away width, which landscape has plenty of.
+ */
+@media (min-width: 640px) {
+  .panel-frame {
+    padding-left: calc(2.5rem + var(--safe-l));
+    padding-right: calc(2.5rem + var(--safe-r));
+  }
+}
+@media (min-width: 640px) and (min-height: 700px) {
+  .panel-frame {
+    padding-bottom: calc(6rem + var(--safe-b));
+  }
+}
+@media (min-width: 1024px) and (min-height: 700px) {
+  .panel-frame {
+    padding-top: calc(1.5rem + var(--safe-t));
+    padding-left: calc(5rem + var(--safe-l));
+    padding-right: calc(5rem + var(--safe-r));
+    padding-bottom: calc(92px + var(--safe-b));
+  }
 }
 
 /* The Minecraft layer underneath keeps its own crisp texels. */

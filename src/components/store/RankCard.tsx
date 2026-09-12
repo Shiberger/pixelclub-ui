@@ -77,8 +77,13 @@ export function RankCard({ rank, tier, onBuy }: { rank: Rank; tier: number; onBu
           aria-hidden
         />
 
-        <div className="relative flex flex-1 items-start gap-4 p-5">
-          <RankEmblem tier={tier} tone={t} />
+        <div className="relative flex flex-1 items-start gap-3 p-4 @sm:gap-4 @sm:p-5">
+          <div className="@sm:hidden">
+            <RankEmblem tier={tier} tone={t} size={64} />
+          </div>
+          <div className="hidden @sm:block">
+            <RankEmblem tier={tier} tone={t} />
+          </div>
 
           <div className="min-w-0 flex-1">
             <div className="mb-1 flex items-center gap-2">
@@ -98,7 +103,7 @@ export function RankCard({ rank, tier, onBuy }: { rank: Rank; tier: number; onBu
           </div>
         </div>
 
-        <div className="relative flex items-center gap-2.5 border-t border-white/8 bg-black/20 px-5 py-3.5">
+        <div className="relative flex items-center gap-2.5 border-t border-white/8 bg-black/20 px-4 py-3 @sm:px-5 @sm:py-3.5">
           <IconButton title="Gift to a friend" theme="violet" size={40}>
             <GiftIcon className="size-[18px]" />
           </IconButton>
